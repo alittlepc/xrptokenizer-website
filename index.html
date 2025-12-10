@@ -1,506 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRP Tokenizer | Xahau TaaS Dual-Mode Service</title>
-    <!-- Load Tailwind CSS and essential XRPL/Xahau libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@hashgraph/xrpl-codec@1.0.0/dist/xrpl-codec.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ripple-keypairs@1.3.0/dist/ripple-keypairs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-sha512@0.8.0/src/sha512.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <title>xrptokenizer.com - Token TaaS (Mainnet)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://unpkg.com/xumm-sdk@latest/xumm-sdk.min.js"></script>
+  <script src="https://unpkg.com/xrpl@latest"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
+      font-size: 16px;
+      line-height: 1.5;
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      color: #fff;
+    }
+    h1 { font-size: 2.4rem; margin-bottom: 0.3rem; }
+    h2 { margin: 1.8rem 0 0.8rem; }
+    .header { text-align: center; margin: 20px 0 30px; }
+    .tagline { opacity: 0.9; }
+    .warning {
+      background: linear-gradient(135deg,#ffecd2 0%,#fcb69f 100%);
+      color:#222;
+      padding:15px 18px;
+      border-radius: 12px;
+      border-left:6px solid #f59e0b;
+      margin: 15px 0 25px;
+    }
+    .mode-selector {
+      display:flex; flex-wrap:wrap; gap:16px; justify-content:center;
+      margin: 25px 0;
+    }
+    .mode-card {
+      width: 320px;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(15px);
+      border-radius: 18px;
+      padding: 20px;
+      border: 2px solid rgba(255,255,255,.35);
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      box-shadow: 0 8px 25px rgba(0,0,0,.28);
+    }
+    .mode-card:hover { transform: translateY(-4px); border-color:#10b981; }
+    .mode-card.active { border-color:#10b981; background: rgba(16,185,129,.2); }
+    .mode-title { font-size: 1.3rem; margin-bottom: 0.35rem; }
+    .price { font-size: 2rem; font-weight: 700; color:#10b981; margin: 0.3rem 0 0.4rem; }
+    .small { font-size: 0.9rem; opacity:0.9; }
 
-    <style>
-        /* Base styling for aesthetics and responsiveness */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
-        .step-card { transition: all 0.3s ease-in-out; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
-        .shadow-xahau { box-shadow: 0 4px 15px -2px rgba(118, 59, 219, 0.5); }
-        .btn-primary { background-color: #763bdb; border-color: #763bdb; color: white; transition: background-color 0.2s; }
-        .btn-primary:hover { background-color: #6332c0; }
-        .qr-code { display: flex; justify-content: center; align-items: center; min-height: 180px; }
-        .indicator { width: 36px; height: 36px; margin: 0 auto; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
-    </style>
-</head>
-<body class="p-4 md:p-8 min-h-screen">
+    input {
+      width: 100%;
+      max-width: 260px;
+      margin: 8px 0;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.4);
+      font-size: 15px;
+      background: rgba(255,255,255,.92);
+      color:#222;
+    }
+    label { display:block; margin-top:10px; }
 
-    <header class="text-center mb-10">
-        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800">XRP Tokenizer: Public Token-as-a-Service</h1>
-        <p class="text-lg text-gray-600 mt-2">The only tool to create Xahau tokens with permanent, automatically enforced 1% transfer fees.</p>
-    </header>
+    button {
+      display:block;
+      width:100%;
+      max-width:320px;
+      padding:16px 24px;
+      margin: 16px auto;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 14px;
+      border:none;
+      cursor:pointer;
+      background: linear-gradient(135deg,#10b981,#059669);
+      color:#fff;
+      box-shadow:0 8px 24px rgba(16,185,129,.4);
+      transition: all .25s;
+      text-align:center;
+    }
+    button:hover { transform: translateY(-3px); box-shadow:0 12px 32px rgba(16,185,129,.55); }
 
-    <main class="max-w-4xl mx-auto">
-        
-        <!-- Role Selector -->
-        <div class="mb-8 p-4 bg-gray-100 rounded-xl flex justify-center space-x-4">
-            <button id="mode-owner" onclick="setMode('owner')" class="px-4 py-2 rounded-full font-semibold text-sm bg-purple-500 text-white shadow-md">
-                Service Owner (Setup)
-            </button>
-            <button id="mode-user" onclick="setMode('user')" class="px-4 py-2 rounded-full font-semibold text-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
-                Public User (Creation)
-            </button>
-        </div>
+    #status {
+      background: linear-gradient(135deg,#f093fb 0%,#f5576c 100%);
+      padding: 22px;
+      border-radius: 16px;
+      margin: 25px 0;
+      min-height: 140px;
+      border: 3px solid rgba(255,255,255,.3);
+      box-shadow:0 10px 40px rgba(0,0,0,.35);
+      font-size: 0.95rem;
+    }
+    .green { color:#bbf7d0; font-weight:600; }
+    .red { color:#fee2e2; font-weight:600; }
+    .panel {
+      background: rgba(255,255,255,.12);
+      padding
 
-        <!-- Service Owner Setup Content (Initial Hook Deployment) -->
-        <div id="owner-content" class="hidden">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Service Owner: One-Time Setup</h2>
-            <p class="text-center mb-8 text-gray-600">You must sign these two transactions from your **Processor Account** to make the service live. After this, your customers use the "Public User" mode.</p>
-            
-            <div id="setup-status" class="mb-8 p-3 rounded-lg text-sm font-medium"></div>
-
-             <!-- Step A: Set Fee Collector on Processor Account -->
-            <div class="step-card p-6 md:p-10 rounded-xl bg-white mb-6">
-                <h3 class="text-xl font-bold text-gray-700 mb-4 flex items-center"><div class="indicator bg-blue-500 mr-3">A</div> Lock In Your Revenue Address</h3>
-                <p class="mb-4 text-gray-600">This sets your separate **Fee Collector Address** on your **Processor Account**. This is where all 1% recurring fees will be sent.</p>
-
-                <div class="mb-6 p-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg">
-                    <p class="font-bold text-sm text-purple-700">Processor Account (Signer): <code class="break-words font-mono" id="owner-processor-address-A"></code></p>
-                    <p class="font-bold text-sm text-purple-700 mt-2">Fee Collector Address (Destination): <code class="break-words font-mono" id="owner-fee-address-A"></code></p>
-                </div>
-
-                <button onclick="generateFeeCollectorTx()" class="btn-primary w-full py-3 rounded-lg font-semibold text-lg shadow-xahau">
-                    Generate Tx: Set Hook Collector
-                </button>
-                 <div id="tx-output-A" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg hidden">
-                    <h4 class="text-lg font-medium text-gray-700 mb-4">Sign Tx with Xaman</h4>
-                    <div class="qr-code mb-4" id="qr-code-A"></div>
-                    <a id="xaman-link-A" target="_blank" class="block text-center text-purple-600 hover:text-purple-800 font-medium truncate">
-                        Click here to sign via Xaman
-                    </a>
-                </div>
-                <button id="next-step-A" onclick="nextStepOwner(1)" class="btn-primary w-full py-3 rounded-lg font-semibold text-lg shadow-xahau mt-6 hidden">
-                    Signed! Go to Step B (Deploy Hook)
-                </button>
-            </div>
-            
-             <!-- Step B: Deploy Hook Logic to Processor Account -->
-            <div id="hook-deploy-card" class="step-card p-6 md:p-10 rounded-xl bg-white">
-                <h3 class="text-xl font-bold text-gray-700 mb-4 flex items-center"><div class="indicator bg-red-500 mr-3">B</div> Deploy TaaS Hook Logic</h3>
-                <p class="mb-4 text-gray-600">This deploys the logic that allows other users to pay you, triggers issuance, and enforces the 1% fee on every token transfer.</p>
-
-                 <div class="mb-6 p-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg">
-                    <p class="font-bold text-sm text-purple-700">Processor Account (Signer): <code class="break-words font-mono" id="owner-processor-address-B"></code></p>
-                    <p class="font-bold text-sm text-purple-700 mt-2">Hook Hash: <code class="break-words font-mono" id="owner-hook-hash"></code></p>
-                </div>
-
-                <button onclick="generateHookSetTx()" class="btn-primary w-full py-3 rounded-lg font-semibold text-lg shadow-xahau">
-                    Generate Tx: Deploy HookSet
-                </button>
-                 <div id="tx-output-B" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg hidden">
-                    <h4 class="text-lg font-medium text-gray-700 mb-4">Sign Tx with Xaman</h4>
-                    <div class="qr-code mb-4" id="qr-code-B"></div>
-                    <a id="xaman-link-B" target="_blank" class="block text-center text-purple-600 hover:text-purple-800 font-medium truncate">
-                        Click here to sign via Xaman
-                    </a>
-                </div>
-                <button id="next-step-B" onclick="nextStepOwner(2)" class="btn-primary w-full py-3 rounded-lg font-semibold text-lg shadow-xahau mt-6 hidden">
-                    Setup Complete!
-                </button>
-            </div>
-        </div>
-
-        <!-- Public User Content (Token Creation) -->
-        <div id="user-content" class="hidden">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Public User: Create Your Token</h2>
-            <p class="text-center mb-8 text-gray-600">Use this to define your token. You will pay a one-time XAH fee to the service, and the token will be issued from the TaaS Processor with a **permanent 1% transfer fee** locked to the service owner.</p>
-
-            <div class="step-card p-6 md:p-10 rounded-xl bg-white">
-                <h3 class="text-xl font-bold text-gray-700 mb-6">1. Token Configuration</h3>
-
-                <!-- Token Type Selection (Dual Mode) -->
-                <div class="mb-6 p-4 bg-blue-50 rounded-lg">
-                    <p class="font-bold text-blue-800 mb-3">Select Token Type (Determines Fee Calculation via 16-Char Currency Code):</p>
-                    <label class="inline-flex items-center mr-6">
-                        <input type="radio" name="tokenType" value="stable" checked onclick="toggleValueInput()" class="form-radio text-purple-600 h-5 w-5">
-                        <span class="ml-2 text-gray-700 font-medium">**Stable** (1:1 RLUSD Equivalent)</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="tokenType" value="defi" onclick="toggleValueInput()" class="form-radio text-purple-600 h-5 w-5">
-                        <span class="ml-2 text-gray-700 font-medium">**DeFi** (Custom RLUSD Value Per Unit)</span>
-                    </label>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-4 mb-4">
-                    <div id="tokenNameContainer" class="md:col-span-2">
-                        <label for="tokenName" class="block text-sm font-medium text-gray-700 mb-2">Token Name (3-8 Characters, e.g., LAND)</label>
-                        <input type="text" id="tokenName" maxlength="8" value="LAND" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 uppercase" required>
-                    </div>
-                    <div id="unitValueContainer" class="hidden">
-                        <label for="unitValue" class="block text-sm font-medium text-gray-700 mb-2">Value Per Unit (1-99999 RLUSD)</label>
-                        <input type="number" id="unitValue" value="500" min="1" max="99999" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="tokenAmount" class="block text-sm font-medium text-gray-700 mb-2">Initial Supply Amount</label>
-                    <input type="number" id="tokenAmount" value="1000000" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" required>
-                </div>
-                
-                <div class="mb-6">
-                    <label for="tokenRecipient" class="block text-sm font-medium text-gray-700 mb-2">Recipient Address for Initial Supply (r...)</label>
-                    <input type="text" id="tokenRecipient" placeholder="Your r-address to receive the tokens" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" required>
-                </div>
-
-                <div id="currency-code-user-output" class="mb-6 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm text-indigo-900 font-mono hidden"></div>
-
-                <h3 class="text-xl font-bold text-gray-700 mb-4 mt-8">2. Pay Fee and Issue</h3>
-                
-                <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
-                    <p class="font-bold text-sm text-green-700">Issuance Fee (Paid to TaaS Processor): <span id="public-fee-display"></span> XAH</p>
-                    <p class="font-bold text-sm text-green-700 mt-2">Issuing Account (The TaaS Processor): <code class="break-words font-mono" id="public-processor-address"></code></p>
-                </div>
-
-
-                <button onclick="generateTokenIssuanceTxPublic()" class="btn-primary w-full py-3 rounded-lg font-semibold text-lg shadow-xahau">
-                    Generate Transaction: Pay Fee & Issue Token
-                </button>
-
-                <div id="tx-output-C" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg hidden">
-                    <h4 class="text-lg font-medium text-gray-700 mb-4">Sign Tx with Xaman (This sends the XAH fee)</h4>
-                    <div class="qr-code mb-4" id="qr-code-C"></div>
-                    <a id="xaman-link-C" target="_blank" class="block text-center text-purple-600 hover:text-purple-800 font-medium truncate">
-                        Click here to sign via Xaman
-                    </a>
-                </div>
-                <div class="mt-6 p-3 bg-yellow-100 rounded-lg text-sm text-yellow-800">
-                    **Action Complete:** Once signed, the **TaaS Processor Hook** will automatically issue your new token from its account and send it to your recipient address.
-                </div>
-            </div>
-        </div>
-
-        <!-- Success Screen -->
-        <div id="success-content" class="step-card p-10 rounded-xl bg-white hidden text-center">
-            <svg class="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h2 class="text-2xl font-bold text-gray-700 mt-4">Action Complete!</h2>
-            <p id="success-message" class="text-gray-600 mt-2">The transaction has been submitted. Check your Xaman wallet for the final result.</p>
-            <button onclick="resetApp()" class="mt-6 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-300">
-                Go Back
-            </button>
-        </div>
-
-        <!-- Error/Log Display -->
-        <div id="error-log" class="mt-10 p-4 rounded-lg bg-red-100 text-red-800 hidden">
-            <h3 class="font-bold mb-2">Error Log:</h3>
-            <pre id="error-message" class="text-sm whitespace-pre-wrap"></pre>
-        </div>
-
-    </main>
-
-    <script type="module">
-        // --- Global Crypto References ---
-        const xrplCodec = window.xrplCodec;
-        const ripple = window.ripple;
-        const sha512 = window.sha512;
-        const QRCode = window.QRCode; 
-
-        // -----------------------------------------------------------------
-        // --- CRITICAL CONFIGURATION SECTION (EDIT THESE LINES) ---
-        // -----------------------------------------------------------------
-        
-        // 🚨 CRITICAL 1: REPLACE THIS ENTIRE STRING WITH YOUR COMPILED C HOOK'S HEX BINARY
-        // This Hook logic enforces the 1% fee and handles issuance when paid.
-        const OFFICIAL_TAAS_HOOK_BINARY_HEX = "XXXXXXXXXXXXXXXXXXXX"; 
-        
-        // 🚨 CRITICAL 2: REPLACE WITH YOUR DEDICATED XAHAU FEE COLLECTION ADDRESS (r...)
-        // This address receives the 1% recurring revenue from all token transfers.
-        const SERVICE_FEE_COLLECTOR_ADDRESS = "XXXXXXXXXXXXXXXXXXXX";
-
-        // 🚨 CRITICAL 3: REPLACE WITH YOUR DEDICATED HOOK PROCESSOR ACCOUNT ADDRESS (r...)
-        // This is the single account that YOU own, where the Hook is deployed.
-        const TAAS_PROCESSOR_ADDRESS = "XXXXXXXXXXXXXXXXXXXX"; 
-        
-        // 🚨 CRITICAL 4: THE XAH FEE (in drops, 1,000,000 drops = 1 XAH) USERS MUST PAY TO CREATE A TOKEN
-        const TAAS_CREATION_FEE_DROPS = "10000000"; // Example: 10 XAH
-
-        // -----------------------------------------------------------------
-        // --- END CRITICAL CONFIGURATION SECTION ---
-        // -----------------------------------------------------------------
-
-
-        // --- Global State & Constants ---
-        const HOOK_COLLECTOR_FIELD = '82'; 
-        const RLUSD_CURRENCY_CODE_SUFFIX = 'RLUSD'; 
-        const DEFI_CURRENCY_CODE_SUFFIX = 'RL'; 
-        const XAH_DROPS_PER_XAH = 1000000;
-        
-        let currentMode = 'owner'; // 'owner' or 'user'
-        let currentOwnerStep = 0; // 0=start, 1=fee collector set, 2=hook deployed
-        
-        // Placeholder for the signing account. Xaman replaces this.
-        let userId = 'rExampleAccountForTxSigner...'; 
-
-
-        // --- Utility Functions ---
-
-        const logError = (msg, err = null) => {
-            console.error(msg, err);
-            const errorDiv = document.getElementById('error-log');
-            const errorMsg = document.getElementById('error-message');
-            errorMsg.textContent = `${msg}\n\n${err ? err.stack || err.message || err : ''}`;
-            errorDiv.classList.remove('hidden');
-        };
-        
-        const sha512Half = (hex) => {
-            if (!sha512 || !xrplCodec) { return null; }
-            try {
-                const bytes = xrplCodec.binary.fromHex(hex);
-                const hash = sha512(bytes);
-                return hash.substring(0, 64).toUpperCase();
-            } catch (e) {
-                logError("Failed to calculate Hook Hash. Check the Hook Binary Hex format.", e);
-                return null;
-            }
-        };
-
-        const stringToHex = (str) => {
-            let hex = '';
-            for(let i=0; i<str.length; i++) { hex += str.charCodeAt(i).toString(16).padStart(2, '0'); }
-            return hex.toUpperCase();
-        };
-
-        const generateXamanUrl = (txBlobHex) => {
-            const endpoint = 'https://xahau.pro/xaman/';
-            return `${endpoint}${txBlobHex}`;
-        };
-
-        const generateQrCode = (url, elementId) => {
-            const el = document.getElementById(elementId);
-            el.innerHTML = ''; 
-            new QRCode(el, {
-                text: url,
-                width: 180,
-                height: 180,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-        };
-        
-        // --- Core Logic: Dual-Mode 16-Character Currency Code Generation ---
-        const generateCurrencyCode = (outputElId) => {
-            const name = document.getElementById('tokenName').value.trim().toUpperCase();
-            const type = document.querySelector('input[name="tokenType"]:checked').value;
-            let currencyCode = '';
-            
-            if (name.length < 3 || name.length > 8) { return null; }
-
-            if (type === 'stable') {
-                const suffix = RLUSD_CURRENCY_CODE_SUFFIX;
-                const paddingLength = 16 - name.length - suffix.length;
-                const padding = '0'.repeat(paddingLength > 0 ? paddingLength : 0);
-                currencyCode = name + padding + suffix;
-            } else { 
-                const valInput = document.getElementById('unitValue').value;
-                const val = parseInt(valInput);
-                
-                if (isNaN(val) || val < 1 || val > 99999) { return null; }
-                
-                const valStr = val.toString().padStart(5, '0');
-                const suffix = valStr + DEFI_CURRENCY_CODE_SUFFIX;
-                const paddingLength = 16 - name.length - suffix.length;
-                const padding = '0'.repeat(paddingLength > 0 ? paddingLength : 0);
-                currencyCode = name + padding + suffix;
-            }
-            
-            const outputEl = document.getElementById(outputElId);
-            outputEl.innerHTML = `Generated Currency Code (16-Char): <strong>${currencyCode.substring(0, 16)}</strong>`;
-            outputEl.classList.remove('hidden');
-            
-            return currencyCode.substring(0, 16);
-        };
-
-        window.toggleValueInput = () => {
-            const type = document.querySelector('input[name="tokenType"]:checked').value;
-            const container = document.getElementById('unitValueContainer');
-            const nameContainer = document.getElementById('tokenNameContainer');
-            
-            if (type === 'defi') {
-                container.classList.remove('hidden');
-                nameContainer.classList.remove('md:col-span-2');
-            } else {
-                container.classList.add('hidden');
-                nameContainer.classList.add('md:col-span-2');
-            }
-            generateCurrencyCode('currency-code-user-output');
-        };
-
-        // --- UI Update & Mode Switching ---
-
-        const updateOwnerUI = () => {
-            document.getElementById('owner-processor-address-A').textContent = TAAS_PROCESSOR_ADDRESS;
-            document.getElementById('owner-fee-address-A').textContent = SERVICE_FEE_COLLECTOR_ADDRESS;
-            document.getElementById('owner-processor-address-B').textContent = TAAS_PROCESSOR_ADDRESS;
-            
-            const hookStatus = document.getElementById('setup-status');
-            const isConfigComplete = !OFFICIAL_TAAS_HOOK_BINARY_HEX.includes("XXXXXX") && 
-                                     ripple.keypairs.isValidAddress(SERVICE_FEE_COLLECTOR_ADDRESS) &&
-                                     ripple.keypairs.isValidAddress(TAAS_PROCESSOR_ADDRESS);
-
-            if (!isConfigComplete) {
-                hookStatus.classList.remove('bg-green-100', 'text-green-800');
-                hookStatus.classList.add('bg-red-100', 'text-red-800');
-                hookStatus.innerHTML = `🚨 **Configuration Alert:** Replace all <code>"XXXXXX"</code> placeholders in the code before proceeding.`;
-                document.querySelectorAll('#owner-content button').forEach(btn => btn.disabled = true);
-                return;
-            }
-            document.querySelectorAll('#owner-content button').forEach(btn => btn.disabled = false);
-
-            const hookHash = sha512Half(OFFICIAL_TAAS_HOOK_BINARY_HEX);
-            document.getElementById('owner-hook-hash').textContent = hookHash;
-
-            hookStatus.classList.remove('bg-red-100', 'text-red-800');
-            hookStatus.classList.add('bg-green-100', 'text-green-800');
-            hookStatus.innerHTML = `✅ **System Ready:** Hook Hash is <code>${hookHash.substring(0, 10)}...</code>. Proceed with deployment.`;
-            
-            // Highlight current step based on currentOwnerStep
-            document.getElementById('hook-deploy-card').style.opacity = currentOwnerStep === 1 ? 1 : 0.5;
-            document.getElementById('hook-deploy-card').querySelector('.indicator').classList.toggle('bg-red-500', currentOwnerStep === 1);
-            document.getElementById('hook-deploy-card').querySelector('.indicator').classList.toggle('bg-green-500', currentOwnerStep === 2);
-            document.getElementById('hook-deploy-card').querySelector('.indicator').classList.toggle('bg-red-500', currentOwnerStep < 1);
-            
-            if (currentOwnerStep === 2) {
-                document.getElementById('success-message').textContent = "Owner setup complete! Switch to 'Public User' mode to test token creation.";
-                document.getElementById('success-content').classList.remove('hidden');
-            }
-        };
-
-        const updatePublicUI = () => {
-            document.getElementById('public-processor-address').textContent = TAAS_PROCESSOR_ADDRESS;
-            document.getElementById('public-fee-display').textContent = (parseInt(TAAS_CREATION_FEE_DROPS) / XAH_DROPS_PER_XAH).toFixed(1);
-            generateCurrencyCode('currency-code-user-output');
-        };
-
-        window.setMode = (mode) => {
-            currentMode = mode;
-            document.getElementById('owner-content').classList.toggle('hidden', mode !== 'owner');
-            document.getElementById('user-content').classList.toggle('hidden', mode !== 'user');
-            document.getElementById('success-content').classList.add('hidden');
-            document.getElementById('error-log').classList.add('hidden');
-            document.getElementById('mode-owner').classList.toggle('bg-purple-500', mode === 'owner');
-            document.getElementById('mode-owner').classList.toggle('bg-gray-300', mode !== 'owner');
-            document.getElementById('mode-owner').classList.toggle('text-white', mode === 'owner');
-            document.getElementById('mode-owner').classList.toggle('text-gray-700', mode !== 'owner');
-
-            document.getElementById('mode-user').classList.toggle('bg-purple-500', mode === 'user');
-            document.getElementById('mode-user').classList.toggle('bg-gray-300', mode !== 'user');
-            document.getElementById('mode-user').classList.toggle('text-white', mode === 'user');
-            document.getElementById('mode-user').classList.toggle('text-gray-700', mode !== 'user');
-            
-            if (mode === 'owner') { updateOwnerUI(); }
-            if (mode === 'user') { updatePublicUI(); }
-        };
-
-        window.resetApp = () => {
-            currentOwnerStep = 0;
-            document.querySelectorAll('[id^="tx-output-"]').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[id^="next-step-"]').forEach(el => el.classList.add('hidden'));
-            document.getElementById('error-log').classList.add('hidden');
-            setMode(currentMode);
-        };
-        
-        window.nextStepOwner = (step) => {
-            currentOwnerStep = step;
-            if (step === 2) { 
-                document.getElementById('hook-deploy-card').querySelector('.indicator').classList.remove('bg-red-500');
-                document.getElementById('hook-deploy-card').querySelector('.indicator').classList.add('bg-green-500');
-            }
-            updateOwnerUI();
-        };
-
-        // --- OWNER LOGIC: Step A (Set Hook Collector) ---
-        window.generateFeeCollectorTx = () => {
-            try {
-                // IMPORTANT: Signer (Account) MUST be TAAS_PROCESSOR_ADDRESS to deploy the Hook
-                const tx = { TransactionType: 'AccountSet', Account: TAAS_PROCESSOR_ADDRESS, Fee: '10000', Sequence: 0, };
-                const addressHex = xrplCodec.binary.fromAccountAddress(SERVICE_FEE_COLLECTOR_ADDRESS);
-                tx[HOOK_COLLECTOR_FIELD] = addressHex;
-
-                const txBlobHex = xrplCodec.binary.encode(tx);
-                const xamanUrl = generateXamanUrl(txBlobHex);
-                
-                document.getElementById('tx-output-A').classList.remove('hidden');
-                document.getElementById('next-step-A').classList.remove('hidden');
-                generateQrCode(xamanUrl, 'qr-code-A');
-                document.getElementById('xaman-link-A').href = xamanUrl;
-
-            } catch (e) { logError("Failed to generate Fee Collector AccountSet transaction payload.", e); }
-        };
-
-        // --- OWNER LOGIC: Step B (Deploy HookSet) ---
-        window.generateHookSetTx = () => {
-            try {
-                // IMPORTANT: Signer (Account) MUST be TAAS_PROCESSOR_ADDRESS
-                const tx = {
-                    TransactionType: 'HookSet', Account: TAAS_PROCESSOR_ADDRESS, Fee: '10000', Sequence: 0, 
-                    Hooks: [{ Hook: { CreateCode: OFFICIAL_TAAS_HOOK_BINARY_HEX, HookOn: '0000000000000000', HookGrants: [] }}]
-                };
-
-                const txBlobHex = xrplCodec.binary.encode(tx);
-                const xamanUrl = generateXamanUrl(txBlobHex);
-
-                document.getElementById('tx-output-B').classList.remove('hidden');
-                document.getElementById('next-step-B').classList.remove('hidden');
-                generateQrCode(xamanUrl, 'qr-code-B');
-                document.getElementById('xaman-link-B').href = xamanUrl;
-
-            } catch (e) { logError("Failed to generate HookSet transaction payload.", e); }
-        };
-        
-        // --- PUBLIC USER LOGIC: Step 3 (Token Issuance) ---
-        window.generateTokenIssuanceTxPublic = () => {
-            document.getElementById('tx-output-C').classList.add('hidden');
-            
-            const currencyCode = generateCurrencyCode('currency-code-user-output');
-            const tokenAmount = document.getElementById('tokenAmount').value.trim();
-            const recipient = document.getElementById('tokenRecipient').value.trim();
-            
-            if (!currencyCode || !ripple.keypairs.isValidAddress(recipient) || !tokenAmount) { 
-                return logError("Validation failed. Check token configuration and recipient address."); 
-            }
-            
-            try {
-                // The Hook monitors incoming Payments to the TAAS_PROCESSOR_ADDRESS
-                // Amount: The XAH fee paid by the user.
-                // Destination: TAAS_PROCESSOR_ADDRESS
-                // Memo: Contains the token instruction details for the Hook
-                
-                const tokenInstruction = `${currencyCode}:${tokenAmount}:${recipient}`;
-                
-                const tx = {
-                    TransactionType: 'Payment',
-                    Account: userId, // User's signing account
-                    Destination: TAAS_PROCESSOR_ADDRESS,
-                    Amount: TAAS_CREATION_FEE_DROPS, // XAH fee
-                    Fee: '10000', Sequence: 0,
-                    Memos: [{ Memo: { MemoType: stringToHex("TokenCreation"), MemoData: stringToHex(tokenInstruction) } }]
-                };
-                
-                const txBlobHex = xrplCodec.binary.encode(tx);
-                const xamanUrl = generateXamanUrl(txBlobHex);
-
-                document.getElementById('tx-output-C').classList.remove('hidden');
-                generateQrCode(xamanUrl, 'qr-code-C');
-                document.getElementById('xaman-link-C').href = xamanUrl;
-
-            } catch (e) { logError("Failed to generate Token Issuance transaction payload.", e); }
-        };
-        
-        // Initial setup and event listeners
-        window.onload = () => {
-             // Default to Service Owner mode for configuration
-             setMode('owner');
-             toggleValueInput(); 
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const tokenNameInput = document.getElementById('tokenName');
-            const unitValueInput = document.getElementById('unitValue');
-            if (tokenNameInput) tokenNameInput.addEventListener('input', () => generateCurrencyCode('currency-code-user-output'));
-            if (unitValueInput) unitValueInput.addEventListener('input', () => generateCurrencyCode('currency-code-user-output'));
-        });
-    </script>
-</body>
-</html>
