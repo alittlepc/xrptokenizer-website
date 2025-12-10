@@ -97,5 +97,332 @@
     .red { color:#fee2e2; font-weight:600; }
     .panel {
       background: rgba(255,255,255,.12);
-      padding
+      padding:16px;
+      border-radius:14px;
+      margin:12px 0;
+    }
+    .disclaimer {
+      background: rgba(255,255,255,.96);
+      color:#333;
+      padding:20px;
+      border-radius:14px;
+      margin:30px 0 10px;
+      font-size: 0.9rem;
+      border-top:4px solid #10b981;
+      box-shadow:0 5px 20px rgba(0,0,0,.2);
+    }
+    .footer {
+      text-align:center;
+      font-size:0.85rem;
+      opacity:0.9;
+      margin-top:15px;
+    }
+    .hidden { display:none; }
+
+    @media (max-width: 700px) {
+      h1 { font-size: 2rem; }
+      .mode-card { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏢 xrptokenizer.com</h1>
+    <p class="tagline">
+      Mainnet Tokenization-as-a-Service • Xahau + Xaman • RLUSD-ready in v2
+    </p>
+  </div>
+
+  <div class="warning">
+    <strong>⚠ LIVE MAINNET:</strong> Real XAH, real tokens, real earnings. Double‑check wallets before signing.
+  </div>
+
+  <div class="mode-selector">
+    <div class="mode-card active" id="ind-card" onclick="selectMode('individual')">
+      <div class="mode-title">👤 Individual</div>
+      <div class="price">1% flat</div>
+      <p class="small">
+        Create your own token.<br/>
+        Platform fees: 1% on transfers.<br/>
+        No big upfront cost (just a 0.1 XAH registration ping).
+      </p>
+    </div>
+    <div class="mode-card" id="franchise-card" onclick="selectMode('franchise')">
+      <div class="mode-title">🏢 Franchise</div>
+      <div class="price">5 XAH</div>
+      <p class="small">
+        Become a TaaS provider.<br/>
+        You charge your customers %, platform takes 0.33%.<br/>
+        Franchise logged forever to platform wallet.
+      </p>
+    </div>
+  </div>
+
+  <!-- INDIVIDUAL MODE UI -->
+  <div id="individual-form">
+    <h2>👤 Individual Token (1% Platform Fee)</h2>
+    <button id="connect-individual">🔗 Connect Xaman (Mainnet)</button>
+    <div id="ind-wallet" class="panel"></div>
+
+    <label>Token name</label>
+    <input id="ind-name" placeholder="MyCoffeeCoin" value="MyCoffeeCoin"/>
+
+    <label>Token symbol (3–6 chars)</label>
+    <input id="ind-symbol" placeholder="COFFEE" value="COFFEE" maxlength="6"/>
+
+    <label>Total supply</label>
+    <input id="ind-supply" type="number" value="1000000" min="1"/>
+
+    <button id="create-individual">🚀 Create token (log 1% fee rail)</button>
+  </div>
+
+  <!-- FRANCHISE MODE UI -->
+  <div id="franchise-form" class="hidden">
+    <h2>🏢 Franchise Setup (Custom % + 0.33%)</h2>
+    <button id="connect-franchise">🔗 Connect Xaman (Mainnet)</button>
+    <div id="franchise-wallet" class="panel"></div>
+
+    <label>Business name</label>
+    <input id="bizName" placeholder="CoffeeShop TaaS" value="CoffeeShop TaaS"/>
+
+    <label>Default token symbol for your customers</label>
+    <input id="symbol" placeholder="COFFEE" value="COFFEE" maxlength="6"/>
+
+    <label>Suggested default supply</label>
+    <input id="supply" type="number" value="1000000" min="1"/>
+
+    <label>Your customer fee % (platform fixed at 0.33%)</label>
+    <input id="franchiseFee" type="number" value="2" min="0" max="25"/>
+
+    <div id="feePreview" class="panel"></div>
+    <button id="franchise">🚀 Launch franchise (5 XAH)</button>
+  </div>
+
+  <h2>🧭 Next Steps After You Create a Token</h2>
+  <div class="panel">
+    <p><strong>Optional, for later versions (v2):</strong></p>
+    <ul style="margin-left:18px;">
+      <li>Create a liquidity pool (AMM) so people can trade your token.</li>
+      <li>Pair your token with RLUSD to make a more stable “store of value”.</li>
+      <li>Issue receipt-style NFTs or on-chain invoices for your payments.</li>
+      <li>Connect to analytics dashboards to track volume and holders.</li>
+    </ul>
+    <p style="margin-top:10px;">
+      These features are rolling out in upcoming updates to the XRP Tokenizer suite by Innovative App World LLC.
+      Early users will get access first.
+    </p>
+  </div>
+
+  <h2>📚 Guides & Resources (v2+)</h2>
+  <div class="panel">
+    <p>In future versions, this tool will include step‑by‑step links for:</p>
+    <ul style="margin-left:18px;">
+      <li>Creating an AMM pool for <strong>YOUR TOKEN / XRP</strong> on the XRPL/Xahau DEX.</li>
+      <li>Pairing your token with <strong>RLUSD</strong> to behave more like a “stable token”.</li>
+      <li>Exporting token transaction data for accounting and tax reporting.</li>
+      <li>Generating on‑chain receipts or NFTs linked to payments.</li>
+    </ul>
+    <p style="margin-top:10px;">
+      These options will help businesses turn their token into a stable, trackable payment rail with real‑world
+      reporting and compliance tools.
+    </p>
+  </div>
+
+  <div id="status">Status messages will appear here.</div>
+
+  <div class="disclaimer">
+    <strong>Legal & Brand Notice</strong><br/><br/>
+    This tool is provided by Innovative App World LLC on an “as‑is” basis, for educational and experimental use. 
+    No guarantees are made about uptime, profitability, token value, or regulatory compliance. You are solely responsible 
+    for any tokens you create or use, and for obeying all applicable laws and tax rules in your jurisdiction.<br/><br/>
+    “XRP”, “XRP Ledger”, “Xahau”, “Xaman”, and “Ripple” are trademarks of their respective owners. This project is independent 
+    and not affiliated with or endorsed by Ripple, the XRP Ledger Foundation, Xahau, or Xaman (formerly Xumm).
+  </div>
+
+  <div class="footer">
+    Innovative App World LLC © 2025 · Not affiliated with Ripple (yet 😎)
+  </div>
+
+  <script>
+    // ========= CONFIG: REPLACE THESE 4 LINES WITH YOUR REAL VALUES =========
+    const MASTER_FEE      = "rYOUR_MASTER_FEE_WALLET_HERE";
+    const MASTER_TEMPLATE = "rYOUR_MASTER_TEMPLATE_WALLET_HERE";
+    const HOOK_BASE64     = "YOUR_HOOK_BASE64_FROM_BUILDER_HERE";
+    const HOOK_HASH       = "YOUR_HOOK_HASH_FROM_BUILDER_HERE";
+    // ======================================================================
+
+    const Xumm = new XummSdk();
+    const client = new xrpl.Client("wss://xahau.network:51234");
+
+    let userAccountIndividual = null;
+    let userAccountFranchise = null;
+
+    function selectMode(mode) {
+      const indCard = document.getElementById('ind-card');
+      const frCard  = document.getElementById('franchise-card');
+      const indForm = document.getElementById('individual-form');
+      const frForm  = document.getElementById('franchise-form');
+      indCard.classList.remove('active');
+      frCard.classList.remove('active');
+      if (mode === 'individual') {
+        indCard.classList.add('active');
+        indForm.classList.remove('hidden');
+        frForm.classList.add('hidden');
+      } else {
+        frCard.classList.add('active');
+        frForm.classList.remove('hidden');
+        indForm.classList.add('hidden');
+      }
+      document.getElementById('status').innerHTML = "Mode switched to " + mode + ".";
+    }
+
+    // ========== INDIVIDUAL MODE (1% FLAT) ==========
+
+    document.getElementById('connect-individual').onclick = async () => {
+      try {
+        await client.connect();
+        const acc = await Xumm.getAccount();
+        userAccountIndividual = acc.account;
+        document.getElementById('ind-wallet').innerHTML =
+          '<div><span class="green">Connected:</span><br/>' +
+          userAccountIndividual + '</div>';
+        document.getElementById('status').innerHTML =
+          "Individual mode wallet connected on mainnet.";
+      } catch (e) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Connect failed: ' + e.message + '</span>';
+      }
+    };
+
+    document.getElementById('create-individual').onclick = async () => {
+      if (!userAccountIndividual) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Connect Xaman first (Individual).</span>';
+        return;
+      }
+
+      const name   = document.getElementById('ind-name').value.trim();
+      const symbol = document.getElementById('ind-symbol').value.trim().toUpperCase();
+      const supply = document.getElementById('ind-supply').value.trim();
+
+      if (!name || !symbol || !supply) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Fill all fields (name, symbol, supply).</span>';
+        return;
+      }
+
+      const memoText = `INDIVIDUAL_TOKEN:${symbol}:${userAccountIndividual}:${supply}`;
+      const memoHex  = Buffer.from(memoText, "utf8").toString("hex");
+
+      const txjson = {
+        TransactionType: "Payment",
+        Account: userAccountIndividual,
+        Destination: MASTER_FEE,
+        Amount: "100000", // 0.1 XAH ping for registration
+        Memos: [{
+          Memo: { MemoData: memoHex }
+        }]
+      };
+
+      try {
+        const payload = { txjson };
+        const res = await Xumm.payload.create(payload);
+        document.getElementById('status').innerHTML =
+          '<div><span class="green">Individual token registration prepared.</span><br/>' +
+          'Name: ' + name + '<br/>' +
+          'Symbol: ' + symbol + '<br/>' +
+          'Supply: ' + supply + '<br/><br/>' +
+          'Sign in Xaman to log this rail to the platform wallet (1% fee model).<br/>' +
+          '<a href="' + res.next.always + '" target="_blank" style="color:#e0f2fe;">Open sign link</a>' +
+          '</div>';
+      } catch (e) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Payload error: ' + e.message + '</span>';
+      }
+    };
+
+    // ========== FRANCHISE MODE (5 XAH + CUSTOM %) ==========
+
+    document.getElementById('connect-franchise').onclick = async () => {
+      try {
+        await client.connect();
+        const acc = await Xumm.getAccount();
+        userAccountFranchise = acc.account;
+        document.getElementById('franchise-wallet').innerHTML =
+          '<div><span class="green">Franchise wallet:</span><br/>' +
+          userAccountFranchise + '</div>';
+        updateFranchisePreview();
+        document.getElementById('status').innerHTML =
+          "Franchise mode wallet connected on mainnet.";
+      } catch (e) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Connect failed: ' + e.message + '</span>';
+      }
+    };
+
+    function updateFranchisePreview() {
+      const feeInput = document.getElementById('franchiseFee');
+      if (!feeInput || !userAccountFranchise) return;
+      const fee = parseFloat(feeInput.value || "0");
+      const total = 0.33 + fee;
+      document.getElementById('feePreview').innerHTML =
+        '<div>' +
+        'Platform: 0.33% → ' + MASTER_FEE.slice(0, 16) + '...<br/>' +
+        'You: ' + fee.toFixed(2) + '% → ' + userAccountFranchise.slice(0, 16) + '...<br/>' +
+        '<strong>Total: ' + total.toFixed(2) + '% per customer trade</strong>' +
+        '</div>';
+    }
+
+    document.getElementById('franchiseFee').addEventListener('input', updateFranchisePreview);
+
+    document.getElementById('franchise').onclick = async () => {
+      if (!userAccountFranchise) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Connect Xaman first (Franchise).</span>';
+        return;
+      }
+
+      const bizName     = document.getElementById('bizName').value.trim();
+      const symbol      = document.getElementById('symbol').value.trim().toUpperCase();
+      const supply      = document.getElementById('supply').value.trim();
+      const franchiseFee= document.getElementById('franchiseFee').value.trim();
+
+      if (!bizName || !symbol || !supply || !franchiseFee) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Fill all franchise fields.</span>';
+        return;
+      }
+
+      const memoText = `FRANCHISE_LAUNCH:${bizName}:${symbol}:${userAccountFranchise}:${franchiseFee}:${supply}`;
+      const memoHex  = Buffer.from(memoText, "utf8").toString("hex");
+
+      const txjson = {
+        TransactionType: "Payment",
+        Account: userAccountFranchise,
+        Destination: MASTER_FEE,
+        Amount: "5000000", // 5 XAH franchise fee
+        Memos: [{
+          Memo: { MemoData: memoHex }
+        }]
+      };
+
+      try {
+        const payload = { txjson };
+        const res = await Xumm.payload.create(payload);
+        document.getElementById('status').innerHTML =
+          '<div><span class="green">Franchise launch prepared.</span><br/>' +
+          'Business: ' + bizName + '<br/>' +
+          'Customer fee: ' + franchiseFee + '% + 0.33% platform<br/><br/>' +
+          'Sign in Xaman to pay 5 XAH and log your franchise rail into the platform wallet.<br/>' +
+          '<a href="' + res.next.always + '" target="_blank" style="color:#e0f2fe;">Open sign link</a>' +
+          '</div>';
+      } catch (e) {
+        document.getElementById('status').innerHTML =
+          '<span class="red">Payload error: ' + e.message + '</span>';
+      }
+    };
+  </script>
+</body>
+</html>
+
 
