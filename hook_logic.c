@@ -1,28 +1,23 @@
 #include "hookapi.h"
 
-// IAW Global Utility Rail: 0.33% Total Fee
-// 0.23% to IAW Vault | 0.1% Referral Pool
+int64_t hook(uint32_t reserved) {
+    // 1. Only act on MPT Transfers (where the fee lives)
+    if (otxn_type() != 49) // 49 is the code for MPT transactions
+        accept(0,0,0);
 
-int64_t cbak(int64_t reserved) { 
-    return 0; 
-}
+    // 2. Identify the Fee
+    int64_t fee_paid = otxn_amount(); 
 
-int64_t hook(int64_t reserved) {
-    unsigned char amt[48];
-    int64_t len = otxn_field(amt, 48, sfAmount);
-    if (len < 0) { accept(0,0,0); }
+    // 3. The Math (2/3 to Family, 1/3 to Partner/Self-Rebate)
+    int64_t family_share = (fee_paid * 2) / 3;
+    int64_t partner_share = fee_paid - family_share;
 
-    // 0.33% Fee = amount * 0.0033
-    int64_t fee = float_multiply(len, float_set(-4, 33));
-    
-    // IAW Master Vault - Hex Address
-    unsigned char vault[20] = { 
-        0x52, 0x44, 0x5A, 0x4B, 0x7A, 0x68, 0x67, 0x4E, 
-        0x64, 0x76, 0x42, 0x71, 0x42, 0x65, 0x4D, 0x48, 
-        0x47, 0x6A, 0x61, 0x69 
-    };
+    // 4. Send the shares (Emit transactions)
+    // NOTE: You will replace the "REPLACE_WITH..." below with your actual wallet addresses
+    // etxn_reserve(2);
+    // emit(family_share, "REPLACE_WITH_YOUR_FAMILY_VAULT_ADDRESS");
+    // emit(partner_share, "REPLACE_WITH_PARTNER_OR_REBATE_ADDRESS");
 
-    emit_payment(fee, vault);
     accept(0,0,0);
     return 0;
 }
