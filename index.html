@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head> <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
-<script>
-  // This tells Xaman to stop the loading screen and show your app
-  XummSdk.ready().then(() => {
-    console.log("IAW Rail: Online and Secure");
-  });
-</script><title>Innovative App World</title></head>
-<body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding-top:20%;">
+<head> 
+    <script src="https://xumm.app/assets/cdn/xumm-xapp-sdk.js"></script>
+    <script>
+      // The xApp-specific handshake
+      const sdk = new XummXappSdk();
+      
+      sdk.on('ready', () => {
+        console.log("IAW Rail: Online and Secure");
+        // This is the magic command that kills the loading screen
+        sdk.getStorage().then(storage => {
+           document.body.style.opacity = "1";
+        });
+      });
+    </script>
+    <title>Innovative App World</title>
+</head>
+<body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding-top:20%; opacity:0; transition: opacity 0.5s;">
     <h1>INNOVATIVE APP WORLD</h1>
     <p>Institutional Grade XRPL Infrastructure</p>
     <p style="color:#00ff00;">DOMAIN VERIFIED</p>
