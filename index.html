@@ -1,62 +1,86 @@
 <!DOCTYPE html>
-<html>
-<head> 
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://xumm.app/assets/cdn/xumm-xapp-sdk.js"></script>
-    <title>Innovative App World</title>
-</head>
-<body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding: 10% 5%; opacity:0; transition: opacity 0.5s;">
-    
-    <h1 style="color:#00ff00; letter-spacing: 2px; font-size: 1.8em;">INNOVATIVE APP WORLD</h1>
-    <p style="font-size: 1.1em; color: #bbb;">Institutional RLUSD Infrastructure</p>
-    
-    <div style="border: 1px solid #333; padding: 20px; border-radius: 15px; background: #111; margin-top: 20px;">
-        <h2 style="font-size: 1em; color: #00ff00;">MPT TOKENIZER v1.0</h2>
-        <p style="font-size: 0.9em;">Status: <span style="color:#00ff00;">● DOMAIN VERIFIED</span></p>
-        <hr style="border: 0.5px solid #222; margin: 15px 0;">
-        
-        <button onclick="mintIAWToken()" style="background:#00ff00; color:#000; border:none; padding: 18px 35px; font-weight:bold; cursor:pointer; border-radius: 8px; font-size: 1.2em; width: 100%; box-shadow: 0 4px 15px rgba(0,255,0,0.2);">
-            MINT IAW TEST TOKEN
-        </button>
-        
-        <p style="font-size: 0.75em; color: #666; margin-top: 15px;">
-            Fee: 0.33% | Split: 66/33 | Ledger: XAHAU
-        </p>
-    </div>
-
-    <script>
-      const sdk = new XummXappSdk();
-
-      // Handshake to kill the loading screen
-      sdk.on('ready', () => {
-        document.body.style.opacity = "1";
-      });
-
-      async function mintIAWToken() {
-        try {
-          // 1. Create the Minting Payload
-          const payload = {
-            txjson: {
-              TransactionType: "MPTokenIssuance",
-              Account: sdk.getAccount(), 
-              MPTokenFlags: 1,      // 1 = Allow Indefinite Minting
-              TransferFee: 330,     // 330 = 0.33% (0 to 50000 range)
-              AssetScale: 6,        // Matches RLUSD decimal precision
-              MPTokenMetadata: "49415720496E737469747574696F6E616C205261696C" // Hex for "IAW Institutional Rail"
-            }
-          };
-
-          // 2. Push to Xaman for Signature
-          const request = await sdk.payload.create(payload);
-          
-          if (request && request.next && request.next.always) {
-            sdk.openSignRequest(request.next.always);
-          }
-        } catch (err) {
-          alert("Connection Error. Check Xaman Sandbox Settings.");
+    <title>IAW | Institutional MPT Gateway</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #050505; --panel: #111111; --green: #00ff88; }
+        body { 
+            background: var(--bg); 
+            color: #ffffff; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
         }
-      }
-    </script>
+        .dashboard { 
+            background: var(--panel); 
+            border: 1px solid #222; 
+            padding: 3.5rem; 
+            border-radius: 16px; 
+            max-width: 550px; 
+            width: 90%; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); 
+            text-align: center;
+            border-top: 4px solid var(--gold);
+        }
+        h1 { 
+            color: var(--gold); 
+            letter-spacing: 5px; 
+            text-transform: uppercase; 
+            font-weight: 200; 
+            margin: 0; 
+            font-size: 1.6rem; 
+        }
+        .tagline { color: #666; font-size: 0.75rem; margin-top: 0.5rem; letter-spacing: 3px; text-transform: uppercase; }
+        .divider { height: 1px; background: #222; margin: 2.5rem 0; position: relative; }
+        .divider::after { content: ''; position: absolute; top: 0; left: 25%; width: 50%; height: 1px; background: var(--gold); }
+        
+        .address-container { background: #000; padding: 1.5rem; border-radius: 12px; border: 1px solid #1a1a1a; margin-bottom: 2rem; }
+        .label { color: var(--gold); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 0.75rem; }
+        
+        /* CONTROLLED MONOSPACE FONT FOR R-ADDRESS */
+        .r-address { 
+            font-family: 'JetBrains Mono', 'Courier New', monospace; 
+            color: var(--green); 
+            font-size: 1.05rem; 
+            word-break: break-all; 
+            letter-spacing: 0.5px;
+        }
+
+        .metrics { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
+        .metric-pill { background: #1a1a1a; padding: 0.6rem 1.2rem; border-radius: 100px; font-size: 0.75rem; color: #aaa; border: 1px solid #222; }
+        .metric-pill b { color: var(--gold); }
+
+        .status-footer { font-size: 0.7rem; color: #444; margin-top: 3rem; letter-spacing: 1px; }
+        .blink { height: 6px; width: 6px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Innovative App World</h1>
+        <div class="tagline">Native MPT Utility Protocol</div>
+        
+        <div class="divider"></div>
+        
+        <div class="address-container">
+            <span class="label">Primary Treasury Anchor</span>
+            <div class="r-address">raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</div>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-pill">Protocol: <b>MPT-Native</b></div>
+            <div class="metric-pill">Fee: <b>0.33%</b></div>
+        </div>
+
+        <div class="status-footer">
+            <span class="blink"></span> XAHAU MAINNET INFRASTRUCTURE READY | APRIL 2026
+        </div>
+    </div>
 </body>
 </html>
