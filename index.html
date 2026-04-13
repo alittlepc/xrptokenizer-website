@@ -15,53 +15,55 @@
     <div class="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-sm p-10 text-center">
         <div class="flex justify-between items-center mb-10 border-b border-slate-100 pb-6 text-left">
             <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ HUB</span></h1>
-            <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-sm uppercase tracking-widest">Sovereign v1.0</span>
+            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest leading-none">Sovereign Rail</span>
         </div>
 
-        <div class="bg-slate-950 p-6 rounded-sm mb-10 text-white shadow-xl">
+        <div class="bg-slate-950 p-6 rounded-sm mb-10 text-white">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Institutional Fee</p>
             <p class="text-4xl font-light italic">0.33%</p>
+            <p class="text-[8px] font-mono text-slate-500 mt-4 break-all">HOOK: 07FD5D7E...</p>
         </div>
 
-        <div class="space-y-6">
-            <input type="text" id="bizName" placeholder="Enter Merchant Name" 
-            class="w-full border-b-2 border-slate-200 py-3 text-center text-lg focus:border-slate-950 outline-none transition-all placeholder:text-slate-200 bg-transparent">
+        <div id="inputGroup">
+            <input type="text" id="bizName" placeholder="Enter Asset Name" 
+            class="w-full border-b-2 border-slate-200 py-3 text-center text-lg focus:border-slate-950 outline-none transition-all placeholder:text-slate-200 bg-transparent mb-8">
 
-            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.4em] transition-all shadow-lg active:scale-95">
-                Initialize Rail
+            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.4em] transition-all">
+                Generate QR
             </button>
         </div>
 
-        <p class="mt-10 text-[9px] text-slate-300 uppercase tracking-widest">
-            Xahau Protocol Enforcement Active
-        </p>
+        <div id="qrGroup" class="hidden animate-pulse">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Scan with Xaman Camera</p>
+            <div id="qrContainer" class="p-2 border border-slate-100 inline-block bg-white">
+                </div>
+            <button onclick="window.location.reload()" class="block mt-6 text-[10px] text-slate-400 underline uppercase tracking-widest mx-auto">Restart</button>
+        </div>
     </div>
 
     <script>
         document.getElementById('mintBtn').onclick = () => {
             const name = document.getElementById('bizName').value;
-            if(!name) return alert("Merchant Name Required");
+            if(!name) return alert("Name Required");
 
-            // Construct the Xahau Transaction
+            // THE RAW TRANSACTION
             const tx = {
                 "TransactionType": "MPTokenIssuanceCreate",
                 "AssetScale": 6,
-                "TransferFee": 330, // 0.33% Institutional Fee
+                "TransferFee": 330,
                 "MPTokenMetadata": btoa(name),
                 "Flags": 1,
-                "Hooks": [{ 
-                    "Hook": { 
-                        "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" 
-                    } 
-                }]
+                "Hooks": [{ "Hook": { "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" } }]
             };
 
-            // This is the direct WEB-LINK. It bypasses all 404/600 errors.
-            const blob = btoa(JSON.stringify(tx));
-            const xamanWebUrl = `https://xumm.app/detect/xapp:xumm.payload/create?tx=${blob}`;
+            // Use the standard XRP Ledger QR format (Xaman reads this natively)
+            const qrData = JSON.stringify(tx);
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
 
-            // Redirect the browser to Xaman's official signing page
-            window.location.href = xamanWebUrl;
+            // UI Switch
+            document.getElementById('inputGroup').classList.add('hidden');
+            document.getElementById('qrGroup').classList.remove('hidden');
+            document.getElementById('qrContainer').innerHTML = `<img src="${qrUrl}" alt="Scan Me">`;
         };
     </script>
 </body>
