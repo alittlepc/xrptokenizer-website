@@ -15,31 +15,31 @@
     <div class="w-full max-w-md bg-white border border-slate-200 shadow-sm rounded-sm p-10">
         <div class="flex justify-between items-center mb-12 border-b border-slate-100 pb-6">
             <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ HUB</span></h1>
-            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest">v1.0.4</span>
+            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest">v1.0.5</span>
         </div>
 
         <div class="bg-slate-900 p-6 rounded-sm mb-10 text-white">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Enforced Toll</p>
-            <p class="text-3xl font-light italic">0.33% <span class="text-sm not-italic text-slate-500">Native</span></p>
-            <div class="mt-4 pt-4 border-t border-slate-800">
-                <p class="text-[9px] font-mono text-slate-500 break-all uppercase">Hash: 07FD5D7ED928...</p>
+            <p class="text-3xl font-light italic">0.33% <span class="text-sm not-italic text-slate-500">Fixed</span></p>
+            <div class="mt-4 pt-4 border-t border-slate-800 text-center">
+                <p class="text-[8px] font-mono text-slate-500 break-all uppercase">Verified Hook: 07FD5D7ED928...</p>
             </div>
         </div>
 
         <div class="space-y-8">
             <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Merchant Asset Name</label>
-                <input type="text" id="bizName" placeholder="Enter Legal Entity" 
-                class="w-full border-b border-slate-200 py-3 text-lg focus:border-slate-900 outline-none transition-colors placeholder:text-slate-200 bg-transparent">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 italic">Merchant Identity</label>
+                <input type="text" id="bizName" placeholder="Enter Asset Name" 
+                class="w-full border-b border-slate-200 py-3 text-lg focus:border-slate-900 outline-none transition-colors placeholder:text-slate-100 bg-transparent">
             </div>
 
-            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98]">
+            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.3em] transition-all active:scale-[0.98]">
                 Initialize Rail
             </button>
         </div>
 
         <div class="mt-12 text-center">
-            <p class="text-[9px] text-slate-300 uppercase tracking-widest leading-loose">
+            <p class="text-[8px] text-slate-300 uppercase tracking-widest leading-loose">
                 Proprietary Sovereign Gateway<br>
                 Innovative App World LLC © 2026
             </p>
@@ -51,14 +51,13 @@
             const name = document.getElementById('bizName').value;
             if (!name) return alert("Merchant Name Required");
 
-            // BASE64 Encoding the Merchant Name
             const encodedName = btoa(name);
 
-            // Constructing the Xahau MPToken Payload
+            // Transaction Payload
             const tx = {
                 "TransactionType": "MPTokenIssuanceCreate",
                 "AssetScale": 6,
-                "TransferFee": 330, // THE 0.33% TOLL
+                "TransferFee": 330, // 0.33% Institutional Toll
                 "MPTokenMetadata": encodedName,
                 "Flags": 1,
                 "Hooks": [{ 
@@ -68,14 +67,14 @@
                 }]
             };
 
-            // Stringify and Base64 encode the whole transaction for the Universal Link
-            const blob = btoa(JSON.stringify(tx));
+            // Convert to JSON and encode for URL
+            const blob = encodeURIComponent(JSON.stringify(tx));
             
-            // This is the Xaman Universal Link that forces the app to open
+            // USE THE DIRECT PAYLOAD LINK (Bypasses xApp Error 600)
             const xamanUrl = `https://xumm.app/detect/xapp:xumm.payload/create?tx=${blob}`;
 
-            // Execute the redirect
-            window.location.href = xamanUrl;
+            // Launch the signature window
+            window.open(xamanUrl, '_blank');
         });
     </script>
 </body>
