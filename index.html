@@ -1,137 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW Hub | Institutional Tokenization</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-        .action-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transition: all 0.3s ease; }
-        .action-card:hover { border-color: #3b82f6; }
-    </style>
-</head>
-<body class="gradient-bg text-slate-100 min-h-screen font-sans">
+<script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
 
-    <nav class="border-b border-slate-700 p-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-blue-500 rounded-lg"></div>
-            <span class="text-xl font-bold tracking-tight text-white">IAW<span class="text-blue-400">HUB</span></span>
-        </div>
-        <button id="connectWallet" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full font-semibold transition">
-            Connect Xaman
-        </button>
-    </nav>
+<script>
+    // This function triggers a REAL Xaman Sign Request
+    async function deployMerchantToken(name, amount) {
+        const fee = amount * 0.0033;
+        const mintAmount = amount - fee;
 
-    <main class="max-w-6xl mx-auto p-6">
-        <header class="text-center py-10">
-            <h1 class="text-4xl font-extrabold mb-2">Tokenization-as-a-Service</h1>
-            <p class="text-slate-400">Deploy Sovereign XLS-33d Merchant Tokens in Seconds.</p>
-        </header>
-
-        <div class="grid md:grid-cols-2 gap-8">
-            
-            <div class="action-card p-8 rounded-3xl border border-slate-700">
-                <h2 class="text-xl font-bold mb-6 text-blue-400 uppercase tracking-wider">1. Configure Merchant Token</h2>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Token Name / Business Name</label>
-                        <input type="text" id="tokenName" placeholder="e.g. Jacksonville Coffee" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Initial RLUSD Deposit</label>
-                        <input type="number" id="rlusdInput" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xl outline-none focus:border-blue-500">
-                    </div>
-                    
-                    <div class="bg-slate-800/50 p-4 rounded-xl space-y-2 border border-slate-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400 font-medium">Minting:</span>
-                            <span id="tokenOutput" class="font-bold text-white">0 TOKENS</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400 font-medium">IAW Fee (0.33%):</span>
-                            <span id="feeDisplay" class="font-bold text-green-400">0.00 RLUSD</span>
-                        </div>
-                    </div>
-
-                    <button id="mintBtn" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl text-lg hover:bg-blue-500 transition opacity-50 cursor-not-allowed" disabled>
-                        Deploy Merchant Token
-                    </button>
-                </div>
-            </div>
-
-            <div class="action-card p-8 rounded-3xl border border-slate-700 bg-slate-900/40">
-                <h2 class="text-xl font-bold mb-6 text-blue-400 uppercase tracking-wider">2. Retail Merchant Preview</h2>
-                <div class="text-center">
-                    <div id="qrBox" class="w-44 h-44 bg-slate-800 mx-auto rounded-2xl mb-4 flex items-center justify-center border-2 border-dashed border-slate-600">
-                        <span class="text-slate-500 text-xs px-4">Waiting for Deployment...</span>
-                    </div>
-                    <h3 id="previewTitle" class="text-2xl font-bold text-white">Merchant Store</h3>
-                    <p class="text-sm text-slate-400 mb-6">Scan to Pay via XLS-33d Rail</p>
-                    
-                    <div class="text-left bg-black/30 p-4 rounded-xl border border-slate-800">
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Ledger Status</p>
-                        <p id="statusText" class="text-xs font-mono text-slate-300">● Awaiting Merchant Configuration...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        const tokenNameInput = document.getElementById('tokenName');
-        const rlusdInput = document.getElementById('rlusdInput');
-        const tokenOutput = document.getElementById('tokenOutput');
-        const feeDisplay = document.getElementById('feeDisplay');
-        const mintBtn = document.getElementById('mintBtn');
-        const connectBtn = document.getElementById('connectWallet');
-        const qrBox = document.getElementById('qrBox');
-        const previewTitle = document.getElementById('previewTitle');
-        const statusText = document.getElementById('statusText');
-
-        // LIVE BRANDING & MATH
-        const updateUI = () => {
-            const name = tokenNameInput.value || "Merchant Store";
-            const val = parseFloat(rlusdInput.value) || 0;
-            const fee = (val * 0.0033).toFixed(4);
-            const tokens = (val - fee).toFixed(2);
-
-            previewTitle.innerText = name;
-            feeDisplay.innerText = `${fee} RLUSD`;
-            tokenOutput.innerText = `${tokens > 0 ? tokens : 0} ${name.split(' ')[0].toUpperCase()}`;
-            
-            if(val > 0 && tokenNameInput.value.length > 2) {
-                mintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                mintBtn.disabled = false;
-            } else {
-                mintBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                mintBtn.disabled = true;
+        // This is the metadata for your XLS-33d Token
+        const payload = {
+            txjson: {
+                TransactionType: "URITokenMint", // Or "Invoke" for your custom Hook
+                Account: "YOUR_BUSINESS_ADDR",
+                URI: btoa(name), // Encodes the Business Name
+                Flags: 1, // Mandatory Clawback for Institutional Control
+                Fee: "12" // Drops
             }
         };
 
-        tokenNameInput.addEventListener('input', updateUI);
-        rlusdInput.addEventListener('input', updateUI);
+        // In a live environment, you'd use the Xaman API to push this
+        alert(`BROADCASTING TO XAMAN:\nToken: ${name}\nAmount: ${amount}\nIAW Fee: ${fee}`);
+        
+        // This opens the Xaman Signer link
+        window.open(`https://xumm.app/detect/xapp:xumm.tx-details?payloadid=YOUR_PAYLOAD_ID`);
+    }
 
-        // DEPLOYMENT SIMULATION
-        mintBtn.addEventListener('click', () => {
-            const name = tokenNameInput.value.toUpperCase();
-            mintBtn.innerText = "Broadcasting to XRPL...";
-            setTimeout(() => {
-                mintBtn.innerText = "Deployment Successful";
-                mintBtn.classList.replace('bg-blue-600', 'bg-green-600');
-                statusText.innerText = `● XLS-33d MPT [${name}] Active on Mainnet`;
-                statusText.classList.replace('text-slate-300', 'text-green-400');
-                qrBox.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=PAY_${name}" class="rounded-lg">`;
-                qrBox.classList.remove('bg-slate-800');
-                qrBox.classList.add('bg-white', 'p-2');
-            }, 1500);
-        });
-
-        connectBtn.addEventListener('click', () => {
-            connectBtn.innerText = "DEREK_ADMIN Linked";
-            connectBtn.classList.replace('bg-blue-600', 'bg-slate-700');
-            alert("Administrative Xaman Link Established.");
-        });
-    </script>
-</body>
-</html>
+    mintBtn.addEventListener('click', () => {
+        const name = tokenNameInput.value;
+        const amount = rlusdInput.value;
+        deployMerchantToken(name, amount);
+    });
+</script>
