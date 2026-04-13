@@ -3,84 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW | Institutional MPT Gateway</title>
+    <title>XRPTokenizer | Sovereign XLS-33d Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/xrpl@2.3.0/build/xrpl-latest-min.js"></script>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --panel: #111111; --green: #00ff88; }
-        body { 
-            background: var(--bg); 
-            color: #ffffff; 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-        }
-        .dashboard { 
-            background: var(--panel); 
-            border: 1px solid #222; 
-            padding: 3.5rem; 
-            border-radius: 16px; 
-            max-width: 550px; 
-            width: 90%; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8); 
-            text-align: center;
-            border-top: 4px solid var(--gold);
-        }
-        h1 { 
-            color: var(--gold); 
-            letter-spacing: 5px; 
-            text-transform: uppercase; 
-            font-weight: 200; 
-            margin: 0; 
-            font-size: 1.6rem; 
-        }
-        .tagline { color: #666; font-size: 0.75rem; margin-top: 0.5rem; letter-spacing: 3px; text-transform: uppercase; }
-        .divider { height: 1px; background: #222; margin: 2.5rem 0; position: relative; }
-        .divider::after { content: ''; position: absolute; top: 0; left: 25%; width: 50%; height: 1px; background: var(--gold); }
-        
-        .address-container { background: #000; padding: 1.5rem; border-radius: 12px; border: 1px solid #1a1a1a; margin-bottom: 2rem; }
-        .label { color: var(--gold); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 0.75rem; }
-        
-        /* CONTROLLED MONOSPACE FONT FOR R-ADDRESS */
-        .r-address { 
-            font-family: 'JetBrains Mono', 'Courier New', monospace; 
-            color: var(--green); 
-            font-size: 1.05rem; 
-            word-break: break-all; 
-            letter-spacing: 0.5px;
-        }
-
-        .metrics { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
-        .metric-pill { background: #1a1a1a; padding: 0.6rem 1.2rem; border-radius: 100px; font-size: 0.75rem; color: #aaa; border: 1px solid #222; }
-        .metric-pill b { color: var(--gold); }
-
-        .status-footer { font-size: 0.7rem; color: #444; margin-top: 3rem; letter-spacing: 1px; }
-        .blink { height: 6px; width: 6px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
-        
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .action-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body>
-    <div class="dashboard">
-        <h1>Innovative App World</h1>
-        <div class="tagline">Native MPT Utility Protocol</div>
+<body class="gradient-bg text-slate-100 min-h-screen font-sans">
+
+    <nav class="border-b border-slate-700 p-4 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-blue-500 rounded-full"></div>
+            <span class="text-xl font-bold tracking-tight">XRPTokenizer<span class="text-blue-400">.com</span></span>
+        </div>
+        <button id="connectWallet" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full font-semibold transition">
+            Connect Xaman
+        </button>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6">
         
-        <div class="divider"></div>
-        
-        <div class="address-container">
-            <span class="label">Primary Treasury Anchor</span>
-            <div class="r-address">raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</div>
+        <header class="text-center py-12">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Sovereign Asset Minting</h1>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                Institutional-grade XLS-33d (MPT) infrastructure. 1:1 RLUSD Parity. 0.33% Fixed Fees.
+            </p>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            
+            <div class="action-card p-8 rounded-3xl border border-slate-700">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-2">⚡</span> Mint IAW Tokens
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Deposit RLUSD</label>
+                        <input type="number" id="mintAmount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-2xl outline-none focus:border-blue-500">
+                    </div>
+                    <div class="flex justify-between text-sm py-2">
+                        <span>Protocol Fee (0.33%)</span>
+                        <span id="feeDisplay">0.00 RLUSD</span>
+                    </div>
+                    <button class="w-full bg-white text-slate-900 font-bold py-4 rounded-xl text-lg hover:bg-slate-200 transition">
+                        Confirm Mint
+                    </button>
+                </div>
+            </div>
+
+            <div class="action-card p-8 rounded-3xl border border-slate-700 bg-blue-900/10">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="mr-2">🛒</span> Retail Mode
+                </h2>
+                <div class="text-center py-4">
+                    <div class="w-48 h-48 bg-white mx-auto rounded-2xl mb-4 flex items-center justify-center">
+                        <span class="text-slate-900 font-bold">[ SCAN TO PAY ]</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Point-of-Sale QR: Scans trigger instant MPT settlement via Xaman.</p>
+                </div>
+                <div class="mt-6 p-4 bg-slate-900/50 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center text-sm">
+                        <span>Merchant Status:</span>
+                        <span class="text-green-400 font-mono italic">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="metrics">
-            <div class="metric-pill">Protocol: <b>MPT-Native</b></div>
-            <div class="metric-pill">Fee: <b>0.33%</b></div>
-        </div>
+        <section class="mt-12">
+            <h3 class="text-xl font-bold mb-6 uppercase tracking-widest text-slate-500">Treasury Overview</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-center">
+                    <span class="block text-slate-500 text-xs uppercase mb-1 font-bold">Total Supply</span>
+                    <span class="text-2xl font-mono">1,000,000 IAW</span>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-center">
+                    <span class="block text-slate-500 text-xs uppercase mb-1 font-bold">1:1 Reserve</span>
+                    <span class="text-2xl font-mono text-blue-400">$1,000,000 RLUSD</span>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-center">
+                    <span class="block text-slate-500 text-xs uppercase mb-1 font-bold">Network Revenue</span>
+                    <span class="text-2xl font-mono text-green-400">$3,300.00</span>
+                </div>
+            </div>
+        </section>
 
-        <div class="status-footer">
-            <span class="blink"></span> XAHAU MAINNET INFRASTRUCTURE READY | APRIL 2026
-        </div>
-    </div>
+    </main>
+
+    <footer class="mt-24 border-t border-slate-800 p-12 text-center text-slate-500 text-sm">
+        &copy; 2026 Innovative App World LLC. All Rights Reserved. Non-Custodial Infrastructure.
+    </footer>
+
+    <script>
+        // Simple fee calculation logic
+        const mintInput = document.getElementById('mintAmount');
+        const feeDisplay = document.getElementById('feeDisplay');
+
+        mintInput.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value) || 0;
+            const fee = (val * 0.0033).toFixed(4);
+            feeDisplay.innerText = `${fee} RLUSD`;
+        });
+
+        // Placeholder for Xaman Connection
+        document.getElementById('connectWallet').addEventListener('click', () => {
+            alert('Opening Xaman Secure Link...');
+        });
+    </script>
 </body>
 </html>
