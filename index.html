@@ -1,84 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>IAW TERMINAL</title>
+    <title>IAW HUB TERMINAL</title>
     <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 40px; background: #fff; color: #000; }
-        .container { max-width: 500px; margin: auto; border: 5px solid #000; padding: 30px; }
-        h1 { font-size: 40px; margin: 0; font-style: italic; }
-        input { width: 90%; padding: 15px; margin: 20px 0; border: 3px solid #000; font-size: 20px; font-weight: bold; }
-        button { width: 100%; padding: 20px; background: #000; color: #fff; font-size: 24px; font-weight: bold; cursor: pointer; border: none; }
-        button:disabled { background: #ccc; }
-        .fee-box { background: #eee; padding: 15px; border-left: 10px solid #000; margin-bottom: 20px; }
-        #qr-box { margin-top: 30px; text-align: center; display: none; }
-        img { border: 2px solid #000; }
+        body { font-family: 'Courier New', Courier, monospace; background: #000; color: #00ff00; padding: 50px; text-align: center; }
+        .terminal { border: 2px solid #00ff00; padding: 40px; display: inline-block; max-width: 500px; box-shadow: 0 0 20px #00ff00; }
+        input { background: #000; border: 1px solid #00ff00; color: #00ff00; padding: 15px; width: 80%; font-size: 20px; margin: 20px 0; }
+        button { background: #00ff00; color: #000; border: none; padding: 20px 40px; font-size: 22px; font-weight: bold; cursor: pointer; width: 100%; }
+        button:hover { background: #00cc00; }
+        #qr-display { margin-top: 30px; display: none; }
+        .fee-tag { color: #fff; background: #333; padding: 5px; margin-bottom: 20px; display: block; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>IAW HUB</h1>
-    <p><b>XAHAU PROTOCOL ACTIVE</b></p>
-    <hr>
+<div class="terminal">
+    <h1>IAW_SOVEREIGN_HUB_v1</h1>
+    <span class="fee-tag">PROTOCOL_FEE: 0.33% | HOOK_HASH: 07FD5D7E...</span>
     
-    <div class="fee-box">
-        <b>INSTITUTIONAL TOLL: 0.33%</b><br>
-        <small>HOOK: 07FD5D7E...</small>
-    </div>
+    <label>MERCHANT_ID:</label><br>
+    <input type="text" id="merchantName" placeholder="ENTER_NAME">
+    
+    <button id="mintBtn">INITIALIZE_MINT</button>
 
-    <label>MERCHANT NAME:</label>
-    <input type="text" id="merchantName" placeholder="ENTER NAME">
-
-    <button id="mainAction" disabled>INITIALIZE MINT</button>
-
-    <div id="qr-box">
-        <p><b>SCAN WITH XAMAN:</b></p>
-        <div id="qrFrame"></div>
-        <p id="status">WAITING...</p>
+    <div id="qr-display">
+        <p>SCAN_TO_DEPLOY_RAIL:</p>
+        <div id="qrImage"></div>
+        <p id="msg">WAITING_FOR_SIGNATURE...</p>
     </div>
 </div>
 
 <script>
-    // YOUR API KEY
+    // INITIALIZE XAMAN
     const xumm = new Xumm('d0ecc892-9b58-40d0-a567-62e4781312f0');
 
-    const input = document.getElementById('merchantName');
-    const btn = document.getElementById('mainAction');
-    const qrBox = document.getElementById('qr-box');
-    const qrFrame = document.getElementById('qrFrame');
-    const status = document.getElementById('status');
+    document.getElementById('mintBtn').onclick = async () => {
+        const name = document.getElementById('merchantName').value;
+        if(name.length < 2) return alert("ENTER NAME");
 
-    input.oninput = () => { btn.disabled = input.value.length < 2; };
+        document.getElementById('mintBtn').innerText = "GENERATING_PAYLOAD...";
+        document.getElementById('qr-display').style.display = 'block';
 
-    btn.onclick = async () => {
-        btn.innerText = "CONNECTING...";
-        qrBox.style.display = 'block';
-        
         try {
-            const payload = {
+            const request = {
                 txjson: {
                     "TransactionType": "MPTokenIssuanceCreate",
                     "AssetScale": 6,
-                    "TransferFee": 330,
-                    "MPTokenMetadata": btoa(input.value),
-                    "Flags": 1
+                    "TransferFee": 330, // THE 0.33% REVENUE RAIL
+                    "MPTokenMetadata": btoa(name), // BASE64 NAME
+                    "Flags": 1,
+                    "Hooks": [
+                        {
+                            "Hook": {
+                                "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824"
+                            }
+                        }
+                    ]
                 }
             };
 
-            const response = await xumm.payload.create(payload);
+            const payload = await xumm.payload.create(request);
 
-            if (response && response.refs) {
-                qrFrame.innerHTML = `<img src="${response.refs.qr_png}" width="250">`;
-                status.innerText = "SIGNATURE REQUIRED";
+            if (payload && payload.refs) {
+                // Show QR Code
+                document.getElementById('qrImage').innerHTML = `<img src="${payload.refs.qr_png}" width="250">`;
                 
-                // If on mobile, this jumps to Xaman automatically
-                if (window.innerWidth < 768) {
-                    window.location.href = response.next.always;
-                }
+                // If they are on a phone, force open the app
+                setTimeout(() => {
+                    window.location.href = payload.next.always;
+                }, 1000);
             }
-        } catch (e) {
-            status.innerText = "ERROR - REFRESH";
+        } catch (err) {
+            document.getElementById('msg').innerText = "ERROR: CHECK_CONNECTION";
+            console.error(err);
         }
     };
 </script>
