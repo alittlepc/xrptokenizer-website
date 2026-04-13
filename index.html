@@ -7,42 +7,41 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; }
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="w-full max-w-md bg-white border border-slate-200 shadow-sm rounded-sm p-10">
+    <div class="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-sm p-10">
         <div class="flex justify-between items-center mb-12 border-b border-slate-100 pb-6">
             <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ HUB</span></h1>
-            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest">v1.0.5</span>
+            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest leading-none">Sovereign Rail</span>
         </div>
 
-        <div class="bg-slate-900 p-6 rounded-sm mb-10 text-white">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Enforced Toll</p>
-            <p class="text-3xl font-light italic">0.33% <span class="text-sm not-italic text-slate-500">Fixed</span></p>
-            <div class="mt-4 pt-4 border-t border-slate-800 text-center">
-                <p class="text-[8px] font-mono text-slate-500 break-all uppercase">Verified Hook: 07FD5D7ED928...</p>
+        <div class="bg-slate-900 p-6 rounded-sm mb-10 text-white shadow-lg">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Enforced Fee</p>
+            <p class="text-3xl font-light italic">0.33% <span class="text-sm not-italic text-slate-500 italic">Institutional</span></p>
+            <div class="mt-4 pt-4 border-t border-slate-800">
+                <p class="text-[8px] font-mono text-slate-500 break-all uppercase">Hook: 07FD5D7ED928...</p>
             </div>
         </div>
 
-        <div class="space-y-8">
+        <div id="inputSection" class="space-y-8">
             <div>
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 italic">Merchant Identity</label>
                 <input type="text" id="bizName" placeholder="Enter Asset Name" 
-                class="w-full border-b border-slate-200 py-3 text-lg focus:border-slate-900 outline-none transition-colors placeholder:text-slate-100 bg-transparent">
+                class="w-full border-b border-slate-200 py-3 text-lg focus:border-slate-900 outline-none transition-colors placeholder:text-slate-200 bg-transparent">
             </div>
-
-            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.3em] transition-all active:scale-[0.98]">
-                Initialize Rail
+            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.3em] transition-all">
+                Generate Sovereign Rail
             </button>
         </div>
 
-        <div class="mt-12 text-center">
-            <p class="text-[8px] text-slate-300 uppercase tracking-widest leading-loose">
-                Proprietary Sovereign Gateway<br>
-                Innovative App World LLC © 2026
-            </p>
+        <div id="qrSection" class="hidden mt-6 text-center border-t border-slate-100 pt-8">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Scan with Xaman Wallet</p>
+            <div id="qrContainer" class="p-4 border border-slate-100 bg-slate-50 inline-block">
+                </div>
+            <p class="mt-6 text-[10px] font-mono text-slate-400 uppercase italic">Awaiting Signature on Ledger...</p>
         </div>
     </div>
 
@@ -52,29 +51,29 @@
             if (!name) return alert("Merchant Name Required");
 
             const encodedName = btoa(name);
-
-            // Transaction Payload
+            
+            // Build the Xahau Transaction
             const tx = {
                 "TransactionType": "MPTokenIssuanceCreate",
                 "AssetScale": 6,
-                "TransferFee": 330, // 0.33% Institutional Toll
+                "TransferFee": 330,
                 "MPTokenMetadata": encodedName,
                 "Flags": 1,
-                "Hooks": [{ 
-                    "Hook": { 
-                        "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" 
-                    } 
-                }]
+                "Hooks": [{ "Hook": { "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" } }]
             };
 
-            // Convert to JSON and encode for URL
-            const blob = encodeURIComponent(JSON.stringify(tx));
-            
-            // USE THE DIRECT PAYLOAD LINK (Bypasses xApp Error 600)
+            // Create the Xaman Payload Deep Link
+            const blob = btoa(JSON.stringify(tx));
             const xamanUrl = `https://xumm.app/detect/xapp:xumm.payload/create?tx=${blob}`;
 
-            // Launch the signature window
-            window.open(xamanUrl, '_blank');
+            // Generate the QR Code using an external image API
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xamanUrl)}`;
+
+            // UI Transitions
+            document.getElementById('inputSection').style.opacity = '0.3';
+            document.getElementById('mintBtn').disabled = true;
+            document.getElementById('qrSection').classList.remove('hidden');
+            document.getElementById('qrContainer').innerHTML = `<img src="${qrImageUrl}" alt="Xaman QR" class="mx-auto">`;
         });
     </script>
 </body>
