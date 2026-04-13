@@ -7,94 +7,75 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-sm p-8">
-        <div class="flex justify-between items-center mb-10 border-b border-slate-100 pb-6">
-            <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ SOVEREIGN</span></h1>
-            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-full uppercase tracking-widest">Live Node</span>
+    <div class="w-full max-w-md bg-white border border-slate-200 shadow-sm rounded-sm p-10">
+        <div class="flex justify-between items-center mb-12 border-b border-slate-100 pb-6">
+            <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ HUB</span></h1>
+            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest">v1.0.4</span>
         </div>
 
-        <div class="bg-slate-950 p-6 rounded-sm mb-8 text-white">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Institutional Fee</p>
-            <p class="text-3xl font-light">0.33% <span class="text-sm text-slate-500">Fixed</span></p>
+        <div class="bg-slate-900 p-6 rounded-sm mb-10 text-white">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Enforced Toll</p>
+            <p class="text-3xl font-light italic">0.33% <span class="text-sm not-italic text-slate-500">Native</span></p>
             <div class="mt-4 pt-4 border-t border-slate-800">
-                <p class="text-[9px] font-mono text-slate-500 break-all uppercase">Hook: 07FD5D7ED928...</p>
+                <p class="text-[9px] font-mono text-slate-500 break-all uppercase">Hash: 07FD5D7ED928...</p>
             </div>
         </div>
 
-        <div class="space-y-6">
+        <div class="space-y-8">
             <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Merchant Legal Name</label>
-                <input type="text" id="bizName" placeholder="e.g. Goldman & Co" 
-                class="w-full border-b-2 border-slate-200 py-3 text-lg focus:border-slate-950 outline-none transition-colors placeholder:text-slate-200">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Merchant Asset Name</label>
+                <input type="text" id="bizName" placeholder="Enter Legal Entity" 
+                class="w-full border-b border-slate-200 py-3 text-lg focus:border-slate-900 outline-none transition-colors placeholder:text-slate-200 bg-transparent">
             </div>
 
-            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 text-sm uppercase tracking-widest transition-all shadow-lg active:scale-[0.98]">
+            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98]">
                 Initialize Rail
             </button>
         </div>
 
-        <div id="resultArea" class="hidden mt-10 text-center border-t border-slate-100 pt-8 animate-pulse">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Awaiting Xaman Authorization</p>
-            <div id="qrContainer" class="inline-block p-4 border border-slate-100 rounded-sm bg-slate-50">
-                </div>
-            <p class="mt-4 text-xs text-blue-600 font-bold uppercase tracking-tight">Open Xaman to Sign</p>
+        <div class="mt-12 text-center">
+            <p class="text-[9px] text-slate-300 uppercase tracking-widest leading-loose">
+                Proprietary Sovereign Gateway<br>
+                Innovative App World LLC © 2026
+            </p>
         </div>
     </div>
 
     <script>
-        document.getElementById('mintBtn').addEventListener('click', async () => {
+        document.getElementById('mintBtn').addEventListener('click', () => {
             const name = document.getElementById('bizName').value;
-            if (!name) return alert("Business Name Required");
+            if (!name) return alert("Merchant Name Required");
 
-            const btn = document.getElementById('mintBtn');
-            const resArea = document.getElementById('resultArea');
-            const qrCont = document.getElementById('qrContainer');
+            // BASE64 Encoding the Merchant Name
+            const encodedName = btoa(name);
 
-            btn.innerText = "PROCESSING...";
-            btn.disabled = true;
+            // Constructing the Xahau MPToken Payload
+            const tx = {
+                "TransactionType": "MPTokenIssuanceCreate",
+                "AssetScale": 6,
+                "TransferFee": 330, // THE 0.33% TOLL
+                "MPTokenMetadata": encodedName,
+                "Flags": 1,
+                "Hooks": [{ 
+                    "Hook": { 
+                        "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" 
+                    } 
+                }]
+            };
 
-            // DIRECT FETCH TO XAMAN API - NO SDK REQUIRED
-            try {
-                const response = await fetch('https://xumm.app/api/v1/platform/payload', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-API-Key': 'd0ecc892-9b58-40d0-a567-62e4781312f0'
-                    },
-                    body: JSON.stringify({
-                        txjson: {
-                            "TransactionType": "MPTokenIssuanceCreate",
-                            "AssetScale": 6,
-                            "TransferFee": 330,
-                            "MPTokenMetadata": btoa(name),
-                            "Flags": 1,
-                            "Hooks": [{ "Hook": { "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" } }]
-                        }
-                    })
-                });
+            // Stringify and Base64 encode the whole transaction for the Universal Link
+            const blob = btoa(JSON.stringify(tx));
+            
+            // This is the Xaman Universal Link that forces the app to open
+            const xamanUrl = `https://xumm.app/detect/xapp:xumm.payload/create?tx=${blob}`;
 
-                const data = await response.json();
-
-                if (data.refs && data.refs.qr_png) {
-                    resArea.classList.remove('hidden');
-                    qrCont.innerHTML = `<img src="${data.refs.qr_png}" width="200" class="mx-auto">`;
-                    btn.innerText = "PAYLOAD ACTIVE";
-                    
-                    // Force the deep link for mobile
-                    setTimeout(() => {
-                        window.location.href = data.next.always;
-                    }, 1500);
-                }
-            } catch (err) {
-                console.error(err);
-                btn.innerText = "RETRY";
-                btn.disabled = false;
-            }
+            // Execute the redirect
+            window.location.href = xamanUrl;
         });
     </script>
 </body>
