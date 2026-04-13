@@ -7,107 +7,83 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(15, 23, 42, 0.9); border: 1px solid #1e293b; backdrop-filter: blur(20px); border-radius: 2rem; }
+        .glass-card { background: rgba(15, 23, 42, 0.95); border: 1px solid #1e293b; backdrop-filter: blur(20px); border-radius: 2rem; }
         .brand-gradient { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .input-box { background: #0f172a; border: 1px solid #334155; border-radius: 1rem; padding: 1rem; width: 100%; color: white; outline: none; transition: 0.3s; font-size: 1.1rem; }
+        .input-box { background: #0f172a; border: 1px solid #334155; border-radius: 1rem; padding: 1.2rem; width: 100%; color: white; outline: none; transition: 0.3s; font-size: 1.1rem; }
         .input-box:focus { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
         .action-btn { background: #2563eb; color: white; font-weight: 800; padding: 1.5rem; border-radius: 1rem; width: 100%; transition: 0.4s; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
-        .action-btn:hover:not(:disabled) { background: #1d4ed8; transform: scale(1.02); }
+        .action-btn:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-2px); }
         .action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     </style>
 </head>
-<body class="min-h-screen selection:bg-blue-500/30">
+<body class="min-h-screen">
 
-    <nav class="border-b border-slate-800 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
+    <nav class="border-b border-slate-800 bg-slate-950/80 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 brand-gradient rounded-2xl flex items-center justify-center font-black text-white italic shadow-lg">IAW</div>
-                <div>
-                    <span class="text-2xl font-black tracking-tighter uppercase block leading-none">IAW HUB</span>
-                    <span class="text-[10px] text-blue-500 font-bold uppercase tracking-[0.2em]">Sovereign Rails</span>
-                </div>
+                <span class="text-2xl font-black tracking-tighter uppercase leading-none">IAW HUB</span>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="hidden md:block text-right">
-                    <p class="text-[10px] text-slate-500 font-black uppercase">API Connectivity</p>
-                    <p class="text-xs font-mono text-green-500">d0ecc892-SECURE</p>
-                </div>
+            <div class="text-right">
+                <p class="text-[10px] text-slate-500 font-black uppercase">API KEY VERIFIED</p>
+                <p class="text-xs font-mono text-blue-500">d0ecc892-***</p>
             </div>
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto px-6 py-16">
-        <div class="grid lg:grid-cols-12 gap-12 items-start">
+        <div class="grid lg:grid-cols-12 gap-12">
             
             <div class="lg:col-span-7 space-y-10">
-                <div class="space-y-4">
-                    <h1 class="text-6xl font-black italic tracking-tighter uppercase leading-[0.9]">Live Asset <br><span class="text-blue-500">Deployment</span></h1>
-                    <p class="text-slate-400 text-lg max-w-xl">Issue institutional-grade XLS-33d Multi-Purpose Tokens with a native 0.33% revenue capture rail.</p>
-                </div>
+                <header class="space-y-4">
+                    <h1 class="text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Live MPT <br><span class="text-blue-500 underline decoration-blue-800">Minting</span></h1>
+                    <p class="text-slate-400 text-lg">Broadcast XLS-33d assets with native 0.33% revenue rails.</p>
+                </header>
 
-                <section class="glass-card p-10 shadow-2xl border-t border-slate-700/50">
+                <section class="glass-card p-10 shadow-2xl">
                     <div class="space-y-8">
                         <div>
-                            <label class="block text-[11px] font-black text-slate-500 uppercase mb-3 tracking-widest">Business Legal Name</label>
-                            <input type="text" id="merchantName" placeholder="e.g. Atlantic Coffee Co." class="input-box">
+                            <label class="block text-[11px] font-black text-slate-500 uppercase mb-3 tracking-widest">Business Name</label>
+                            <input type="text" id="merchantName" placeholder="e.g. Jacksonville Logistics" class="input-box">
                         </div>
 
-                        <div class="bg-slate-900/80 rounded-2xl p-8 border border-slate-800 group transition-all hover:border-blue-500/50">
-                            <div class="flex justify-between items-center mb-6">
-                                <span class="text-sm text-slate-400 font-black uppercase italic tracking-widest">Protocol Fee (0.33%)</span>
-                                <span class="text-2xl font-black text-green-400 font-mono tracking-tighter italic">NATIVE_ENFORCED</span>
+                        <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs text-slate-400 font-black uppercase italic">Protocol Fee</span>
+                                <span class="text-xl font-black text-green-400 font-mono italic">0.33%</span>
                             </div>
-                            <p class="text-[11px] text-slate-500 font-medium uppercase leading-relaxed opacity-80">
-                                This issuance includes a ledger-level transfer fee routed to the IAW Treasury Hub. 
-                                Fees apply to every peer-to-peer and retail transaction globally.
-                            </p>
+                            <p class="text-[10px] text-slate-600 font-bold uppercase">Native Ledger Enforcement Active</p>
                         </div>
 
                         <button id="mainAction" class="action-btn" disabled>
-                            Generate Xaman Sign Request
+                            Authorize Xaman Mint
                         </button>
                     </div>
                 </section>
             </div>
 
-            <div class="lg:col-span-5 space-y-8">
-                <section class="glass-card p-10 border-blue-500/10 shadow-inner text-center">
-                    <div id="qrFrame" class="w-64 h-64 bg-slate-950 mx-auto rounded-[2.5rem] mb-10 flex items-center justify-center border-2 border-dashed border-slate-800 transition-all duration-700">
-                        <div class="p-8">
-                            <div class="w-12 h-12 border-4 border-slate-800 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
-                            <p class="text-slate-700 text-[10px] font-black uppercase tracking-[0.2em]">Waiting for Payload</p>
-                        </div>
+            <div class="lg:col-span-5">
+                <section class="glass-card p-10 text-center border-blue-500/10 h-full flex flex-col justify-center">
+                    <h2 class="text-xs font-black text-blue-500 uppercase mb-8 tracking-widest">Xaman Live Signer</h2>
+                    
+                    <div id="qrFrame" class="w-64 h-64 bg-slate-950 mx-auto rounded-[2.5rem] mb-10 flex items-center justify-center border-2 border-dashed border-slate-800 transition-all duration-500 overflow-hidden">
+                        <p class="text-slate-700 text-[10px] font-black uppercase tracking-widest px-8">Awaiting Configuration</p>
                     </div>
                     
-                    <div class="space-y-6">
-                        <h3 id="liveName" class="text-3xl font-black italic uppercase tracking-tighter">RETAIL HUB</h3>
-                        
-                        <div class="bg-black/50 p-5 rounded-2xl text-left border border-slate-800 font-mono text-[11px] space-y-3 shadow-inner">
-                            <div class="flex justify-between items-center">
-                                <span class="text-blue-500 font-bold uppercase">Rail Type:</span>
-                                <span class="text-slate-300">XLS-33d MPT</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-blue-500 font-bold uppercase">Revenue Account:</span>
-                                <span class="text-slate-500">...4UA3H7c</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-blue-500 font-bold uppercase">Status:</span>
-                                <span id="tollStatus" class="text-slate-600 font-black italic uppercase tracking-widest">Ready</span>
-                            </div>
+                    <div class="space-y-4">
+                        <h3 id="liveName" class="text-3xl font-black italic uppercase tracking-tighter">Standby</h3>
+                        <div class="bg-black/50 p-4 rounded-xl text-left border border-slate-800 font-mono text-[10px] space-y-2">
+                            <p class="text-blue-500 uppercase">Status: <span id="tollStatus" class="text-slate-600">Ready</span></p>
+                            <p class="text-blue-500 uppercase">Key: <span class="text-slate-600">d0ecc892...</span></p>
                         </div>
                     </div>
                 </section>
             </div>
+
         </div>
     </main>
 
-    <footer class="max-w-6xl mx-auto px-8 py-12 border-t border-slate-900 text-center">
-        <p class="text-[10px] text-slate-700 font-black uppercase tracking-[0.5em]">Innovative App World LLC | Derek Little | Secured by Xaman API</p>
-    </footer>
-
     <script>
-        const API_KEY = "d0ecc892-9b58-40d0-a567-62e4781312f0";
         const merchantIn = document.getElementById('merchantName');
         const mainBtn = document.getElementById('mainAction');
         const qrFrame = document.getElementById('qrFrame');
@@ -115,39 +91,39 @@
         const liveName = document.getElementById('liveName');
 
         merchantIn.addEventListener('input', () => {
-            liveName.innerText = merchantIn.value.toUpperCase() || "RETAIL HUB";
+            liveName.innerText = merchantIn.value.toUpperCase() || "STANDBY";
             mainBtn.disabled = merchantIn.value.length < 3;
         });
 
-        mainBtn.addEventListener('click', async () => {
+        mainBtn.addEventListener('click', () => {
             const bizName = merchantIn.value;
             
-            // 1. Prepare JSON Payload for XLS-33d MPT
+            // 1. Transaction JSON
             const txJson = {
                 "TransactionType": "MPTokenIssuanceCreate",
                 "AssetScale": 6,
-                "TransferFee": 330, // 0.33% Native Fee
+                "TransferFee": 330,
                 "MPTokenMetadata": btoa(bizName),
                 "Flags": 1
             };
 
-            // 2. Generate Universal Link
-            const xamanUrl = `https://xumm.app/detect/xrpl-tx?tx=${JSON.stringify(txJson)}`;
+            // 2. Encode to String and clean for URI
+            const txString = JSON.stringify(txJson);
+            const xamanUrl = "https://xumm.app/detect/xrpl-tx?tx=" + encodeURIComponent(txString);
 
-            // 3. UI Feedback
-            mainBtn.innerText = "OPENING XAMAN...";
-            tollStatus.innerText = "AWAITING SIGNATURE";
+            // 3. UI Updates
+            mainBtn.innerText = "SIGNING...";
+            tollStatus.innerText = "AWAITING WALLET SIGNATURE";
             tollStatus.classList.replace('text-slate-600', 'text-blue-400');
 
-            // 4. Update QR Code for Scan-to-Sign
-            qrFrame.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xamanUrl)}" class="p-3 bg-white rounded-[2rem] shadow-2xl ring-8 ring-blue-500/20">`;
+            // 4. QR Code Injection
+            qrFrame.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xamanUrl)}" class="p-3 bg-white rounded-[2rem]">`;
             qrFrame.classList.remove('bg-slate-950');
 
-            // 5. Open Xaman for Desktop/Mobile Bridge
-            // This is the "Live" moment
+            // 5. Automatic Redirect for Desktop
             setTimeout(() => {
-                window.open(xamanUrl, '_blank');
-            }, 500);
+                window.location.href = xamanUrl;
+            }, 800);
         });
     </script>
 </body>
