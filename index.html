@@ -3,140 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW Hub | XLS-33d Deployment</title>
+    <title>IAW Hub | Institutional XLS-33d Gateway</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
-        .card { background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; border-radius: 1.5rem; padding: 2rem; }
-        .input-style { background: #020617; border: 1px solid #334155; border-radius: 0.75rem; padding: 0.75rem; width: 100%; color: white; outline: none; }
-        .input-style:focus { border-color: #3b82f6; }
-        .blue-btn { background: #2563eb; color: white; font-weight: bold; padding: 1rem; border-radius: 0.75rem; width: 100%; transition: 0.2s; }
-        .blue-btn:hover { background: #1d4ed8; }
-        .blue-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(15, 23, 42, 0.8); border: 1px solid #1e293b; backdrop-filter: blur(12px); border-radius: 1.5rem; }
+        .brand-gradient { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .input-box { background: #0f172a; border: 1px solid #334155; border-radius: 0.75rem; padding: 0.8rem; width: 100%; color: white; outline: none; transition: 0.2s; }
+        .input-box:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .action-btn { background: #2563eb; color: white; font-weight: 700; padding: 1rem; border-radius: 0.75rem; width: 100%; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.05em; }
+        .action-btn:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-1px); }
+        .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-    <nav class="border-b border-slate-800 p-4 flex justify-between items-center max-w-6xl mx-auto">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-blue-600 rounded"></div>
-            <span class="text-xl font-bold">IAW <span class="text-blue-500">HUB</span></span>
+    <nav class="border-b border-slate-800 bg-slate-950/50 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 brand-gradient rounded-xl shadow-lg shadow-blue-500/20 flex items-center justify-center font-black text-white italic">IAW</div>
+                <span class="text-2xl font-black tracking-tighter">HUB <span class="text-blue-500 text-sm font-bold tracking-normal uppercase ml-1">v3.0</span></span>
+            </div>
+            <div class="flex gap-4">
+                <button id="connectXaman" class="text-sm font-bold border border-slate-700 hover:border-blue-500 px-5 py-2 rounded-full transition">
+                    Connect Xaman
+                </button>
+            </div>
         </div>
-        <button id="connectBtn" class="border border-blue-600 text-blue-400 px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-600 hover:text-white transition">
-            Connect Xaman
-        </button>
     </nav>
 
-    <main class="max-w-6xl mx-auto p-6">
-        <header class="text-center py-10">
-            <h1 class="text-4xl font-black mb-2 italic">TOKENIZATION-AS-A-SERVICE</h1>
-            <p class="text-slate-400">Institutional XLS-33d (MPT) Sovereign Settlement Rail</p>
-        </header>
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-black mb-4 italic tracking-tight uppercase">Sovereign Asset Rails</h1>
+            <p class="text-slate-400 text-lg max-w-3xl mx-auto">
+                The world's first <span class="text-white font-bold">Tokenization-as-a-Service (TaaS)</span> infrastructure utilizing native XLS-33d Multi-Purpose Tokens with protocol-enforced 0.33% institutional fees.
+            </p>
+        </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
             
-            <div class="card">
-                <h2 class="text-blue-400 font-bold mb-6 text-sm tracking-widest uppercase">1. Merchant Configuration</h2>
-                
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Business / Token Name</label>
-                        <input type="text" id="bizName" placeholder="e.g. Jax Coffee House" class="input-style">
+            <div class="lg:col-span-7 space-y-8">
+                <section class="glass-card p-8">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="w-2 h-6 brand-gradient rounded-full"></span>
+                        <h2 class="text-xl font-bold uppercase italic">Deploy Merchant Asset</h2>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Initial RLUSD Liquidity</label>
-                        <input type="number" id="amountInput" placeholder="0.00" class="input-style text-xl font-mono">
-                    </div>
-
-                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Minting:</span>
-                            <span id="tokenPreview" class="font-bold text-white">0 TOKENS</span>
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase mb-2">Merchant Name</label>
+                            <input type="text" id="merchantName" placeholder="e.g. Atlantic Logistics" class="input-box">
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400 font-medium italic">IAW Technology Fee (0.33%):</span>
-                            <span id="feePreview" class="font-bold text-green-500">0.00 RLUSD</span>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase mb-2">Asset Symbol</label>
+                            <input type="text" id="tokenSymbol" placeholder="e.g. ATL" class="input-box uppercase">
                         </div>
                     </div>
 
-                    <button id="deployBtn" class="blue-btn" disabled>DEPLOY TO XRPL</button>
-                </div>
+                    <div class="mb-8">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-2">Initial Minting Volume (RLUSD Backed)</label>
+                        <div class="relative">
+                            <input type="number" id="mintVolume" placeholder="100000.00" class="input-box text-2xl font-mono pr-16">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">RLUSD</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800 mb-8">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-4">
+                            <span class="text-sm text-slate-400 font-bold uppercase italic">Global Protocol Fee (0.33%)</span>
+                            <span id="feeDisplay" class="text-xl font-mono text-green-400">0.00 RLUSD</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-400 font-bold uppercase italic">Merchant Net Issuance</span>
+                            <span id="netDisplay" class="text-xl font-mono text-blue-400">0.00</span>
+                        </div>
+                    </div>
+
+                    <button id="mainAction" class="action-btn" disabled>
+                        Initialize XLS-33d MPT Issuance
+                    </button>
+                </section>
             </div>
 
-            <div class="card bg-blue-900/10 border-blue-900/30">
-                <h2 class="text-blue-400 font-bold mb-6 text-sm tracking-widest uppercase">2. Retail Rail Preview</h2>
-                
-                <div class="text-center">
-                    <div id="qrContainer" class="w-48 h-48 bg-slate-800 mx-auto rounded-3xl mb-4 flex items-center justify-center border-2 border-dashed border-slate-700">
-                        <span class="text-slate-500 text-xs px-6 uppercase font-bold">Awaiting Setup</span>
-                    </div>
+            <div class="lg:col-span-5 space-y-6">
+                <section class="glass-card p-8 border-blue-500/20">
+                    <h2 class="text-xs font-black text-blue-500 uppercase mb-6 tracking-widest">Retail Mode Preview</h2>
                     
-                    <h3 id="displayBizName" class="text-2xl font-black italic">MERCHANT STORE</h3>
-                    <p class="text-xs text-slate-400 font-bold tracking-tighter uppercase mb-6">Real-Time XLS-33d Settlement</p>
+                    <div class="text-center">
+                        <div id="qrFrame" class="w-56 h-56 bg-slate-900 mx-auto rounded-3xl mb-6 flex items-center justify-center border-2 border-dashed border-slate-700 transition-all duration-500">
+                            <div class="text-center p-4">
+                                <p class="text-slate-600 text-[10px] font-bold uppercase">Hardware Wallet Required</p>
+                                <p class="text-slate-700 text-[9px] mt-1">Connect Xaman to Link Rail</p>
+                            </div>
+                        </div>
 
-                    <div class="bg-black/40 p-3 rounded-lg text-left font-mono text-[10px]">
-                        <p class="text-blue-500 mb-1 font-bold">LEDGER STATUS:</p>
-                        <p id="ledgerStatus" class="text-slate-400 italic">READY FOR DEPLOYMENT...</p>
+                        <h3 id="liveName" class="text-2xl font-black italic uppercase tracking-tighter">Merchant Rail</h3>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-8">Real-Time Sovereign Settlement</p>
+                        
+                        <div class="text-left bg-black p-4 rounded-xl font-mono text-[10px] space-y-1">
+                            <div class="flex justify-between">
+                                <span class="text-blue-500 uppercase">Architecture:</span>
+                                <span class="text-slate-300">XLS-33d Native</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-500 uppercase">Toll Status:</span>
+                                <span id="tollStatus" class="text-slate-500 italic">Inactive</span>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-slate-900 mt-2">
+                                <span class="text-blue-500 uppercase">Hash:</span>
+                                <span class="text-slate-600">---------------------------</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
             </div>
 
         </div>
     </main>
 
+    <footer class="max-w-6xl mx-auto px-6 py-12 border-t border-slate-900 text-center">
+        <p class="text-slate-600 text-xs font-bold uppercase tracking-widest">
+            Innovative App World LLC &copy; 2026 | Sovereign Financial Infrastructure
+        </p>
+    </footer>
+
     <script>
-        const bizInput = document.getElementById('bizName');
-        const amtInput = document.getElementById('amountInput');
-        const tokenPreview = document.getElementById('tokenPreview');
-        const feePreview = document.getElementById('feePreview');
-        const deployBtn = document.getElementById('deployBtn');
-        const displayBiz = document.getElementById('displayBizName');
-        const qrContainer = document.getElementById('qrContainer');
-        const ledgerStatus = document.getElementById('ledgerStatus');
-        const connectBtn = document.getElementById('connectBtn');
+        const merchantIn = document.getElementById('merchantName');
+        const symbolIn = document.getElementById('tokenSymbol');
+        const volIn = document.getElementById('mintVolume');
+        const feeOut = document.getElementById('feeDisplay');
+        const netOut = document.getElementById('netDisplay');
+        const liveName = document.getElementById('liveName');
+        const mainBtn = document.getElementById('mainAction');
+        const connectBtn = document.getElementById('connectXaman');
+        const qrFrame = document.getElementById('qrFrame');
+        const tollStatus = document.getElementById('tollStatus');
 
-        // CALCULATION LOGIC
-        const update = () => {
-            const name = bizInput.value || "MERCHANT STORE";
-            const val = parseFloat(amtInput.value) || 0;
+        const updateMath = () => {
+            const name = merchantIn.value || "Merchant Rail";
+            const symbol = symbolIn.value || "MPT";
+            const val = parseFloat(volIn.value) || 0;
             const fee = (val * 0.0033).toFixed(4);
-            const tokens = (val - fee).toFixed(2);
+            const net = (val - fee).toFixed(2);
 
-            displayBiz.innerText = name.toUpperCase();
-            feePreview.innerText = `${fee} RLUSD`;
-            tokenPreview.innerText = `${tokens > 0 ? tokens : 0} ${name.split(' ')[0].toUpperCase()}`;
+            liveName.innerText = name;
+            feeOut.innerText = `${fee} RLUSD`;
+            netOut.innerText = `${net} ${symbol.toUpperCase()}`;
 
-            if(val > 0 && bizInput.value.length > 2) {
-                deployBtn.disabled = false;
+            if(val > 0 && merchantIn.value.length > 2) {
+                mainBtn.disabled = false;
             } else {
-                deployBtn.disabled = true;
+                mainBtn.disabled = true;
             }
         };
 
-        bizInput.addEventListener('input', update);
-        amtInput.addEventListener('input', update);
+        [merchantIn, symbolIn, volIn].forEach(el => el.addEventListener('input', updateMath));
 
-        // MINT ACTION
-        deployBtn.addEventListener('click', () => {
-            deployBtn.innerText = "OPENING XAMAN SIGNER...";
-            setTimeout(() => {
-                ledgerStatus.innerText = "SUCCESS: MPT DEPLOYED TO MAINNET";
-                ledgerStatus.classList.replace('text-slate-400', 'text-green-400');
-                deployBtn.innerText = "TRANSACTION CONFIRMED";
-                deployBtn.style.background = "#16a34a";
-                qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=PAY_${bizInput.value.toUpperCase()}" class="rounded-2xl">`;
-                qrContainer.classList.remove('bg-slate-800');
-                qrContainer.classList.add('bg-white', 'p-2');
-                alert("Xaman Payload Signed. Tokens Issued to Wallet.");
-            }, 1200);
+        connectBtn.addEventListener('click', () => {
+            connectBtn.innerText = "DEREK_SECURE_LINKED";
+            connectBtn.classList.add('bg-blue-600', 'text-white', 'border-transparent');
+            tollStatus.innerText = "IAW HUB AUTHORIZED";
+            tollStatus.classList.replace('text-slate-500', 'text-blue-400');
         });
 
-        // CONNECT ACTION
-        connectBtn.addEventListener('click', () => {
-            connectBtn.innerText = "DEREK_ADMIN CONNECTED";
-            connectBtn.classList.replace('border-blue-600', 'bg-slate-700');
-            connectBtn.classList.replace('text-blue-400', 'text-white');
+        mainBtn.addEventListener('click', () => {
+            mainBtn.innerText = "Broadcasting XLS-33d Issuance...";
+            mainBtn.disabled = true;
+
+            setTimeout(() => {
+                mainBtn.innerText = "Issuance Confirmed";
+                mainBtn.style.background = "#059669";
+                qrFrame.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=MINT_IAW_${symbolIn.value}" class="rounded-2xl p-2 bg-white">`;
+                qrFrame.classList.remove('bg-slate-900');
+                qrFrame.classList.add('bg-white', 'p-2', 'shadow-2xl', 'shadow-blue-500/20');
+                tollStatus.innerText = "0.33% REVENUE RAIL ACTIVE";
+                tollStatus.classList.replace('text-blue-400', 'text-green-400');
+            }, 1500);
         });
     </script>
 </body>
