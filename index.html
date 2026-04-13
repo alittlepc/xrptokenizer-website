@@ -12,69 +12,57 @@
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-sm p-10">
-        <div class="flex justify-between items-center mb-12 border-b border-slate-100 pb-6">
+    <div class="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-sm p-10 text-center">
+        <div class="flex justify-between items-center mb-10 border-b border-slate-100 pb-6 text-left">
             <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ HUB</span></h1>
-            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest leading-none">Sovereign Rail</span>
+            <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-sm uppercase tracking-widest">Sovereign v1.0</span>
         </div>
 
-        <div class="bg-slate-900 p-6 rounded-sm mb-10 text-white shadow-lg">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Enforced Fee</p>
-            <p class="text-3xl font-light italic">0.33% <span class="text-sm not-italic text-slate-500 italic">Institutional</span></p>
-            <div class="mt-4 pt-4 border-t border-slate-800">
-                <p class="text-[8px] font-mono text-slate-500 break-all uppercase">Hook: 07FD5D7ED928...</p>
-            </div>
+        <div class="bg-slate-950 p-6 rounded-sm mb-10 text-white shadow-xl">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Institutional Fee</p>
+            <p class="text-4xl font-light italic">0.33%</p>
         </div>
 
-        <div id="inputSection" class="space-y-8">
-            <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 italic">Merchant Identity</label>
-                <input type="text" id="bizName" placeholder="Enter Asset Name" 
-                class="w-full border-b border-slate-200 py-3 text-lg focus:border-slate-900 outline-none transition-colors placeholder:text-slate-200 bg-transparent">
-            </div>
-            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.3em] transition-all">
-                Generate Sovereign Rail
+        <div class="space-y-6">
+            <input type="text" id="bizName" placeholder="Enter Merchant Name" 
+            class="w-full border-b-2 border-slate-200 py-3 text-center text-lg focus:border-slate-950 outline-none transition-all placeholder:text-slate-200 bg-transparent">
+
+            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.4em] transition-all shadow-lg active:scale-95">
+                Initialize Rail
             </button>
         </div>
 
-        <div id="qrSection" class="hidden mt-6 text-center border-t border-slate-100 pt-8">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Scan with Xaman Wallet</p>
-            <div id="qrContainer" class="p-4 border border-slate-100 bg-slate-50 inline-block">
-                </div>
-            <p class="mt-6 text-[10px] font-mono text-slate-400 uppercase italic">Awaiting Signature on Ledger...</p>
-        </div>
+        <p class="mt-10 text-[9px] text-slate-300 uppercase tracking-widest">
+            Xahau Protocol Enforcement Active
+        </p>
     </div>
 
     <script>
-        document.getElementById('mintBtn').addEventListener('click', () => {
+        document.getElementById('mintBtn').onclick = () => {
             const name = document.getElementById('bizName').value;
-            if (!name) return alert("Merchant Name Required");
+            if(!name) return alert("Merchant Name Required");
 
-            const encodedName = btoa(name);
-            
-            // Build the Xahau Transaction
+            // Construct the Xahau Transaction
             const tx = {
                 "TransactionType": "MPTokenIssuanceCreate",
                 "AssetScale": 6,
-                "TransferFee": 330,
-                "MPTokenMetadata": encodedName,
+                "TransferFee": 330, // 0.33% Institutional Fee
+                "MPTokenMetadata": btoa(name),
                 "Flags": 1,
-                "Hooks": [{ "Hook": { "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" } }]
+                "Hooks": [{ 
+                    "Hook": { 
+                        "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" 
+                    } 
+                }]
             };
 
-            // Create the Xaman Payload Deep Link
+            // This is the direct WEB-LINK. It bypasses all 404/600 errors.
             const blob = btoa(JSON.stringify(tx));
-            const xamanUrl = `https://xumm.app/detect/xapp:xumm.payload/create?tx=${blob}`;
+            const xamanWebUrl = `https://xumm.app/detect/xapp:xumm.payload/create?tx=${blob}`;
 
-            // Generate the QR Code using an external image API
-            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xamanUrl)}`;
-
-            // UI Transitions
-            document.getElementById('inputSection').style.opacity = '0.3';
-            document.getElementById('mintBtn').disabled = true;
-            document.getElementById('qrSection').classList.remove('hidden');
-            document.getElementById('qrContainer').innerHTML = `<img src="${qrImageUrl}" alt="Xaman QR" class="mx-auto">`;
-        });
+            // Redirect the browser to Xaman's official signing page
+            window.location.href = xamanWebUrl;
+        };
     </script>
 </body>
 </html>
