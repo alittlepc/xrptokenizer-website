@@ -1,138 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW Hub | Institutional Asset Rail</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>IAW TERMINAL</title>
     <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
-</head>
-<body class="bg-gray-100 text-slate-900 font-sans min-h-screen">
-
-    <nav class="bg-slate-900 text-white p-6 shadow-2xl border-b-4 border-blue-500">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-3xl font-black italic tracking-tighter">
-                IAW <span class="text-blue-400 not-italic">HUB</span>
-            </h1>
-            <div class="text-right">
-                <p class="text-[10px] font-mono text-blue-300 uppercase leading-none">Sovereign Rail Active</p>
-                <p class="text-[10px] font-mono text-slate-400">XAHAU | XLS-33d</p>
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-xl mx-auto mt-12 p-4">
-        <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-slate-200">
-            <div class="mb-8">
-                <h2 class="text-2xl font-black uppercase text-slate-800 tracking-tight">Mint Asset Rail</h2>
-                <p class="text-sm text-slate-500 font-medium">Configure merchant issuance with native 0.33% toll.</p>
-            </div>
-
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Merchant Identity</label>
-                    <input type="text" id="merchantName" placeholder="e.g. Atlantic Logistics" 
-                    class="w-full bg-slate-50 p-5 border-2 border-slate-200 rounded-2xl text-xl font-bold focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all">
-                </div>
-
-                <div class="bg-blue-600 rounded-2xl p-6 text-white shadow-inner relative overflow-hidden">
-                    <div class="relative z-10 flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] font-bold uppercase opacity-80">Institutional Toll</p>
-                            <p class="text-xs font-medium opacity-60">Enforced by Hook: 07FD5D7E...</p>
-                        </div>
-                        <div class="text-4xl font-black italic">0.33%</div>
-                    </div>
-                    <div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
-                </div>
-
-                <button id="mainAction" disabled
-                class="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-6 rounded-2xl text-xl uppercase tracking-widest shadow-lg transition-all transform active:scale-95 disabled:opacity-20 disabled:cursor-not-allowed">
-                    Initialize Signer
-                </button>
-            </div>
-        </div>
-
-        <div id="statusSection" class="mt-8 hidden animate-bounce-in">
-            <div class="bg-white border-4 border-blue-500 rounded-[2.5rem] p-8 text-center shadow-2xl">
-                <p class="text-xs font-black uppercase mb-6 text-blue-600 tracking-widest">Scan with Xaman to Authorize</p>
-                <div id="qrFrame" class="bg-slate-50 p-4 rounded-3xl inline-block border-2 border-slate-100">
-                    </div>
-                <div class="mt-6">
-                    <p id="statusMsg" class="font-mono text-sm text-slate-400">Connecting to Ledger...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        // Official IAW Xaman Credentials
-        const xumm = new Xumm('d0ecc892-9b58-40d0-a567-62e4781312f0');
-
-        const input = document.getElementById('merchantName');
-        const btn = document.getElementById('mainAction');
-        const statusSec = document.getElementById('statusSection');
-        const qrFrame = document.getElementById('qrFrame');
-        const statusMsg = document.getElementById('statusMsg');
-
-        // Unlock button when name is entered
-        input.addEventListener('input', () => {
-            btn.disabled = input.value.length < 2;
-        });
-
-        btn.addEventListener('click', async () => {
-            const bizName = input.value;
-            statusSec.classList.remove('hidden');
-            btn.innerText = "WAITING FOR XAMAN...";
-            btn.disabled = true;
-
-            try {
-                // XLS-33d MPT Issuance Payload
-                // This triggers the 0.33% logic verified by Hook Hash 07FD5D7E...
-                const payload = {
-                    txjson: {
-                        "TransactionType": "MPTokenIssuanceCreate",
-                        "AssetScale": 6,
-                        "TransferFee": 330, // 0.33% Toll
-                        "MPTokenMetadata": btoa(bizName),
-                        "Flags": 1
-                    },
-                    options: {
-                        submit: true, // Auto-submit to Xahau Ledger
-                        expire: 300   // 5 minute meeting window
-                    }
-                };
-
-                const response = await xumm.payload.create(payload);
-
-                if (response && response.refs) {
-                    // Inject the live QR code from Xaman
-                    qrFrame.innerHTML = `<img src="${response.refs.qr_png}" width="260" class="rounded-xl">`;
-                    statusMsg.innerText = "PENDING SIGNATURE...";
-                    
-                    // Direct link for mobile or desktop browser
-                    if (response.next.always) {
-                        setTimeout(() => {
-                            window.open(response.next.always, '_blank');
-                        }, 2000);
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                statusMsg.innerText = "CONNECTION ERROR - REFRESH HUB";
-                btn.innerText = "RETRY INITIALIZATION";
-                btn.disabled = false;
-            }
-        });
-    </script>
-
     <style>
-        @keyframes bounce-in {
-            0% { transform: scale(0.9); opacity: 0; }
-            70% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-bounce-in { animation: bounce-in 0.4s ease-out forwards; }
+        body { font-family: sans-serif; padding: 40px; background: #fff; color: #000; }
+        .container { max-width: 500px; margin: auto; border: 5px solid #000; padding: 30px; }
+        h1 { font-size: 40px; margin: 0; font-style: italic; }
+        input { width: 90%; padding: 15px; margin: 20px 0; border: 3px solid #000; font-size: 20px; font-weight: bold; }
+        button { width: 100%; padding: 20px; background: #000; color: #fff; font-size: 24px; font-weight: bold; cursor: pointer; border: none; }
+        button:disabled { background: #ccc; }
+        .fee-box { background: #eee; padding: 15px; border-left: 10px solid #000; margin-bottom: 20px; }
+        #qr-box { margin-top: 30px; text-align: center; display: none; }
+        img { border: 2px solid #000; }
     </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>IAW HUB</h1>
+    <p><b>XAHAU PROTOCOL ACTIVE</b></p>
+    <hr>
+    
+    <div class="fee-box">
+        <b>INSTITUTIONAL TOLL: 0.33%</b><br>
+        <small>HOOK: 07FD5D7E...</small>
+    </div>
+
+    <label>MERCHANT NAME:</label>
+    <input type="text" id="merchantName" placeholder="ENTER NAME">
+
+    <button id="mainAction" disabled>INITIALIZE MINT</button>
+
+    <div id="qr-box">
+        <p><b>SCAN WITH XAMAN:</b></p>
+        <div id="qrFrame"></div>
+        <p id="status">WAITING...</p>
+    </div>
+</div>
+
+<script>
+    // YOUR API KEY
+    const xumm = new Xumm('d0ecc892-9b58-40d0-a567-62e4781312f0');
+
+    const input = document.getElementById('merchantName');
+    const btn = document.getElementById('mainAction');
+    const qrBox = document.getElementById('qr-box');
+    const qrFrame = document.getElementById('qrFrame');
+    const status = document.getElementById('status');
+
+    input.oninput = () => { btn.disabled = input.value.length < 2; };
+
+    btn.onclick = async () => {
+        btn.innerText = "CONNECTING...";
+        qrBox.style.display = 'block';
+        
+        try {
+            const payload = {
+                txjson: {
+                    "TransactionType": "MPTokenIssuanceCreate",
+                    "AssetScale": 6,
+                    "TransferFee": 330,
+                    "MPTokenMetadata": btoa(input.value),
+                    "Flags": 1
+                }
+            };
+
+            const response = await xumm.payload.create(payload);
+
+            if (response && response.refs) {
+                qrFrame.innerHTML = `<img src="${response.refs.qr_png}" width="250">`;
+                status.innerText = "SIGNATURE REQUIRED";
+                
+                // If on mobile, this jumps to Xaman automatically
+                if (window.innerWidth < 768) {
+                    window.location.href = response.next.always;
+                }
+            }
+        } catch (e) {
+            status.innerText = "ERROR - REFRESH";
+        }
+    };
+</script>
+
 </body>
 </html>
