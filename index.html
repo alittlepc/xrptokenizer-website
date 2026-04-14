@@ -1,70 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW | Institutional Suite</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #ffffff; }
-    </style>
+    <title>XRPTokenizer.com | KYC-Verified Mint</title>
+    <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
+    <script src="https://unpkg.com/xrpl@latest/build/xrpl-latest-min.js"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen p-6">
-
-    <div class="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-sm p-10 text-center">
-        <div class="flex justify-between items-center mb-10 border-b border-slate-100 pb-6 text-left">
-            <h1 class="text-xl font-black tracking-tighter text-slate-900">IAW <span class="font-normal text-slate-400">/ HUB</span></h1>
-            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-sm uppercase tracking-widest leading-none">Sovereign Rail</span>
-        </div>
-
-        <div class="bg-slate-950 p-6 rounded-sm mb-10 text-white">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Institutional Fee</p>
-            <p class="text-4xl font-light italic">0.33%</p>
-            <p class="text-[8px] font-mono text-slate-500 mt-4 break-all">HOOK: 07FD5D7E...</p>
-        </div>
-
-        <div id="inputGroup">
-            <input type="text" id="bizName" placeholder="Enter Asset Name" 
-            class="w-full border-b-2 border-slate-200 py-3 text-center text-lg focus:border-slate-950 outline-none transition-all placeholder:text-slate-200 bg-transparent mb-8">
-
-            <button id="mintBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 text-xs uppercase tracking-[0.4em] transition-all">
-                Generate QR
-            </button>
-        </div>
-
-        <div id="qrGroup" class="hidden animate-pulse">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Scan with Xaman Camera</p>
-            <div id="qrContainer" class="p-2 border border-slate-100 inline-block bg-white">
-                </div>
-            <button onclick="window.location.reload()" class="block mt-6 text-[10px] text-slate-400 underline uppercase tracking-widest mx-auto">Restart</button>
-        </div>
+<body style="background:#0f172a; color:white; font-family:sans-serif; text-align:center;">
+    <h1>Institutional RWA Mint</h1>
+    <div id="auth-section">
+        <button id="auth-btn" onclick="connectWallet()">Link Verified Xaman Profile (KYC)</button>
+    </div>
+    
+    <div id="mint-section" style="display:none; margin-top:50px;">
+        <input type="text" id="assetName" placeholder="Asset Name (e.g. Florida Property #101)">
+        <button onclick="signMint()">Mint Institutional Asset (0.33% Fee)</button>
     </div>
 
     <script>
-        document.getElementById('mintBtn').onclick = () => {
-            const name = document.getElementById('bizName').value;
-            if(!name) return alert("Name Required");
+        const xumm = new XummPkce('YOUR_API_KEY'); // Get this from Xaman Developer Console
 
-            // THE RAW TRANSACTION
+        async function connectWallet() {
+            const auth = await xumm.authorize();
+            if (auth.me.kycApproved) {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('mint-section').style.display = 'block';
+                console.log("KYC Verified User:", auth.me.account);
+            } else {
+                alert("Institutional Minting requires Xaman KYC verification.");
+            }
+        }
+
+        async function signMint() {
+            const asset = document.getElementById('assetName').value;
+            // 1. Construct the MPT Mint with Flag 64 (Clawback)
             const tx = {
                 "TransactionType": "MPTokenIssuanceCreate",
-                "AssetScale": 6,
-                "TransferFee": 330,
-                "MPTokenMetadata": btoa(name),
-                "Flags": 1,
-                "Hooks": [{ "Hook": { "HookHash": "07FD5D7ED928F5C441E4CFBCEF907FF640B8368915080F9EC97D5241B65FB824" } }]
+                "Account": xumm.getAccount(), // The User's Wallet
+                "Flags": 64, // THE FABIO STANDARD
+                "MPTokenMetadata": xrpl.convertStringToHex(asset),
+                "TransferFee": 330 // 0.33%
             };
-
-            // Use the standard XRP Ledger QR format (Xaman reads this natively)
-            const qrData = JSON.stringify(tx);
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
-
-            // UI Switch
-            document.getElementById('inputGroup').classList.add('hidden');
-            document.getElementById('qrGroup').classList.remove('hidden');
-            document.getElementById('qrContainer').innerHTML = `<img src="${qrUrl}" alt="Scan Me">`;
-        };
+            
+            // 2. Request Signature
+            // The user signs, pays the fee to your Treasury, and receives the token.
+            await xumm.payload.create(tx);
+        }
     </script>
 </body>
 </html>
