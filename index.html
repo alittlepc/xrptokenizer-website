@@ -1,50 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>XRPTokenizer.com | KYC-Verified Mint</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XRPTokerizer | Institutional MPT Tool</title>
     <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
-    <script src="https://unpkg.com/xrpl@latest/build/xrpl-latest-min.js"></script>
+    <style>
+        :root { --primary: #38bdf8; --bg: #0b0f1a; --panel: #161b2a; --border: #2d3748; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #e2e8f0; margin: 0; display: flex; justify-content: center; padding: 40px 20px; }
+        .tool-box { background: var(--panel); width: 100%; max-width: 600px; border-radius: 12px; border: 1px solid var(--border); padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .header { border-bottom: 1px solid var(--border); margin-bottom: 25px; padding-bottom: 15px; }
+        h1 { margin: 0; font-size: 1.4rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .field { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
+        input, select { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: #0b0f1a; color: white; font-size: 1rem; box-sizing: border-box; }
+        .info-box { background: #1e293b; border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 25px; font-size: 0.85rem; line-height: 1.5; }
+        .btn-deploy { width: 100%; padding: 16px; background: var(--primary); color: #0b0f1a; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-deploy:hover { background: #7dd3fc; transform: translateY(-1px); }
+        .status-area { margin-top: 20px; text-align: center; font-family: monospace; font-size: 0.8rem; color: #64748b; }
+        .badge { background: #064e3b; color: #34d399; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+    </style>
 </head>
-<body style="background:#0f172a; color:white; font-family:sans-serif; text-align:center;">
-    <h1>Institutional RWA Mint</h1>
-    <div id="auth-section">
-        <button id="auth-btn" onclick="connectWallet()">Link Verified Xaman Profile (KYC)</button>
-    </div>
-    
-    <div id="mint-section" style="display:none; margin-top:50px;">
-        <input type="text" id="assetName" placeholder="Asset Name (e.g. Florida Property #101)">
-        <button onclick="signMint()">Mint Institutional Asset (0.33% Fee)</button>
+<body>
+
+<div class="tool-box">
+    <div class="header">
+        <h1>MPT Issuance Terminal</h1>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">XRPTokerizer v1.0 | XLS-68d Standard</p>
     </div>
 
-    <script>
-        const xumm = new XummPkce('YOUR_API_KEY'); // Get this from Xaman Developer Console
+    <div class="info-box">
+        <strong>Institutional Settings Applied:</strong><br>
+        • Flags: 112 (Trade, Transfer, Clawback enabled)<br>
+        • Fee: 0.33% Institutional Service Rate<br>
+        • Compliance: Native Asset Restitution Protocol
+    </div>
 
-        async function connectWallet() {
-            const auth = await xumm.authorize();
-            if (auth.me.kycApproved) {
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('mint-section').style.display = 'block';
-                console.log("KYC Verified User:", auth.me.account);
-            } else {
-                alert("Institutional Minting requires Xaman KYC verification.");
-            }
-        }
+    <div class="field">
+        <label>RWA Asset Name (e.g. Gold Reserve #101)</label>
+        <input type="text" id="assetName" placeholder="Enter Asset Description">
+    </div>
 
-        async function signMint() {
-            const asset = document.getElementById('assetName').value;
-            // 1. Construct the MPT Mint with Flag 64 (Clawback)
-            const tx = {
-                "TransactionType": "MPTokenIssuanceCreate",
-                "Account": xumm.getAccount(), // The User's Wallet
-                "Flags": 64, // THE FABIO STANDARD
-                "MPTokenMetadata": xrpl.convertStringToHex(asset),
-                "TransferFee": 330 // 0.33%
-            };
+    <div class="field">
+        <label>Ticker Symbol (3-6 chars)</label>
+        <input type="text" id="assetTicker" value="IAW">
+    </div>
+
+    <div class="field">
+        <label>Maximum Supply (Capped Amount)</label>
+        <input type="text" id="maxSupply" value="1000000">
+    </div>
+
+    <button class="btn-deploy" id="btnDeploy">Deploy to Ledger</button>
+
+    <div id="status" class="status-area">Ready for Authorized Account...</div>
+</div>
+
+<script>
+    // 1. UPDATE WITH YOUR XAMAN API KEY
+    const XUMM_API_KEY = '5a687355-6663-424a-810a-319b93910c69';
+    const xumm = new XummPkce(XUMM_API_KEY);
+
+    // Helper: String to Hex
+    const strToHex = str => Array.from(new TextEncoder().encode(str)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+    document.getElementById('btnDeploy').onclick = async () => {
+        const status = document.getElementById('status');
+        const name = document.getElementById('assetName').value;
+        const ticker = document.getElementById('assetTicker').value;
+        const max = document.getElementById('maxSupply').value;
+
+        if (!name) return alert("Please enter an Asset Name.");
+
+        status.innerText = "Requesting Authorization...";
+
+        try {
+            await xumm.authorize();
+            const state = await xumm.state();
             
-            // 2. Request Signature
-            // The user signs, pays the fee to your Treasury, and receives the token.
-            await xumm.payload.create(tx);
+            // Build the MPT Metadata JSON
+            const metadataJson = JSON.stringify({
+                "n": name,
+                "t": ticker,
+                "d": "Tokenized via XRPTokerizer.com - Institutional Rail"
+            });
+
+            // Prepare Transaction
+            const payload = {
+                txjson: {
+                    "TransactionType": "MPTokenIssuanceCreate",
+                    "Account": state.me.account,
+                    "AssetScale": 6,
+                    "TransferFee": 330, // 0.33% Fixed Fee
+                    "MaximumAmount": max,
+                    "MPTokenMetadata": strToHex(metadataJson),
+                    "Flags": 112, // Binary for CanTrade (16) + CanTransfer (32) + CanClawback (64)
+                }
+            };
+
+            status.innerText = "Payload Created. Check Xaman App.";
+            const request = await xumm.payload.create(payload);
+            
+            if (request.next.always) {
+                window.open(request.next.always, '_blank');
+            }
+        } catch (e) {
+            status.innerText = "Error: " + e.message;
         }
-    </script>
+    };
+</script>
+
 </body>
 </html>
