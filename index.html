@@ -3,109 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRPTokerizer | Institutional RWA Hub</title>
-    <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
+    <title>IAW Hub | Institutional Tokenization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #38bdf8; --bg: #0b0f1a; --panel: #161b2a; --border: #2d3748; --success: #10b981; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: #e2e8f0; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .tool-box { background: var(--panel); width: 100%; max-width: 480px; border-radius: 16px; border: 1px solid var(--border); padding: 35px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center; }
-        .header { border-bottom: 1px solid var(--border); margin-bottom: 25px; padding-bottom: 20px; }
-        h1 { margin: 0; font-size: 1.5rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; }
-        .protocol-badge { display: inline-block; background: #064e3b; color: #34d399; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; margin-top: 10px; border: 1px solid #065f46; }
-        .info-panel { background: #1e293b; border-left: 4px solid var(--success); padding: 15px; margin-bottom: 25px; font-size: 0.85rem; line-height: 1.6; text-align: left; border-radius: 4px; }
-        .field { margin-bottom: 25px; text-align: left; }
-        label { display: block; font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
-        input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: #0b0f1a; color: white; font-size: 1.25rem; box-sizing: border-box; font-weight: 700; outline: none; transition: border-color 0.2s; }
-        input:focus { border-color: var(--primary); }
-        .btn-action { width: 100%; padding: 18px; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.2s; font-size: 1.1rem; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39); }
-        .btn-action:hover { background: #059669; transform: translateY(-1px); }
-        #status { margin-top: 25px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #64748b; min-height: 40px; line-height: 1.4; }
-    </small></style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0e17; color: #ffffff; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .brand-gradient { background: linear-gradient(90deg, #3b82f6 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-primary { background: #ffffff; color: #0a0e17; transition: all 0.3s ease; }
+        .btn-primary:hover { background: #e2e8f0; transform: translateY(-1px); }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-<div class="tool-box">
-    <div class="header">
-        <h1>XRPTokerizer</h1>
-        <div class="protocol-badge">MPT XLS-68d | ON-DEMAND</div>
-    </div>
+    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <div class="text-xl font-600 tracking-tight">IAW <span class="brand-gradient">HUB</span></div>
+        <div class="flex gap-6 items-center text-sm font-light text-gray-400">
+            <span>Docs</span>
+            <span>Ecosystem</span>
+            <button class="btn-primary px-5 py-2 rounded-full font-semibold text-xs uppercase tracking-widest">Connect Wallet</button>
+        </div>
+    </nav>
 
-    <div class="info-panel">
-        <strong>IAW Protocol Active:</strong><br>
-        • Collateral: 1:1 RLUSD (Hook-Verified)<br>
-        • Safety: Flag 112 (Trade/Transfer/Clawback)<br>
-        • Settlement: T-0 Atomic Issuance
-    </div>
+    <main class="flex-grow flex flex-col items-center justify-center px-4">
+        
+        <div id="construction-notice" class="text-center max-w-2xl mb-12">
+            <h1 class="text-5xl font-light mb-4">The Future of <span class="brand-gradient italic">Value</span> is Loading.</h1>
+            <p class="text-gray-400 font-light leading-relaxed">
+                IAW Hub is currently undergoing a structural protocol upgrade to support the 
+                <strong>1:1 RLUSD Institutional Framework</strong>. 
+                Our domains are live, but minting is currently restricted to authorized partners. 
+                <br><br>
+                <span class="text-teal-400 font-600">STAY TUNED — Q2 2026</span>
+            </p>
+        </div>
 
-    <div class="field">
-        <label>Amount of RWA to Issue</label>
-        <input type="number" id="mintAmount" value="1.00" step="0.01" min="0.01">
-    </div>
-
-    <button class="btn-action" id="btnMain">Authorize & Mint</button>
-
-    <div id="status">Secure Session Ready</div>
-</div>
-
-<script>
-    /** * IAW HUB OFFICIAL PRODUCTION CONFIG 
-     */
-    const XUMM_API_KEY = 'd0ecc892-9b58-40d0-a567-62e4781312f0'; 
-    const xumm = new XummPkce(XUMM_API_KEY);
-
-    const statusDiv = document.getElementById('status');
-    const btnMain = document.getElementById('btnMain');
-
-    btnMain.onclick = async () => {
-        const amount = document.getElementById('mintAmount').value;
-
-        if (!amount || amount <= 0) {
-            statusDiv.innerText = "Error: Invalid Amount";
-            return;
-        }
-
-        statusDiv.innerText = "Requesting Xaman Verification...";
-
-        try {
-            // Initiate Identity Link
-            await xumm.authorize();
-            const state = await xumm.state();
+        <div class="glass w-full max-w-5xl rounded-3xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            statusDiv.innerText = "Identity Linked. Building MPT Payload...";
+            <div class="space-y-6">
+                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-semibold">Tokenize Asset</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-2">Asset Name</label>
+                        <input type="text" placeholder="e.g. RealEstate_01" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-2">Buy-In Parity (RLUSD)</label>
+                        <input type="number" value="1.00" readonly class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-teal-400 font-mono">
+                    </div>
+                    <button class="w-full py-4 border border-teal-500/30 text-teal-400 rounded-xl text-sm font-semibold hover:bg-teal-500/10 transition">Initialize Hook</button>
+                </div>
+            </div>
 
-            // BUILD ON-DEMAND MPT TRANSACTION
-            const payload = {
-                txjson: {
-                    "TransactionType": "MPTokenIssuanceCreate",
-                    "Account": state.me.account,
-                    "AssetScale": 6,
-                    "TransferFee": 330, // 0.33% Institutional Rail Fee
-                    "MPTokenMetadata": "696e6e6f7661746976652d6170702d776f726c64", // "innovative-app-world"
-                    "Flags": 112, // 16 (Trade) + 32 (Transfer) + 64 (Clawback)
-                    "Memos": [
-                        {
-                            "Memo": {
-                                "MemoData": "524c5553445f4241434b45445f4d494e54", // "RLUSD_BACKED_MINT"
-                                "MemoType": "4941575f485542" // "IAW_HUB"
-                            }
-                        }
-                    ]
-                }
-            };
+            <div class="md:border-x border-white/10 px-0 md:px-8 space-y-6">
+                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-semibold">Protocol Metrics</h3>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <span class="text-xs text-gray-400">Automated Toll (33bps)</span>
+                        <span class="text-xl font-mono text-white">0.33%</span>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-xs text-gray-400">Total RLUSD Locked</span>
+                        <span class="text-xl font-mono text-white">0.00</span>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-xs text-gray-400">Hook Status</span>
+                        <span class="text-xs bg-teal-500/20 text-teal-400 px-2 py-1 rounded">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
 
-            const request = await xumm.payload.create(payload);
-            
-            if (request.next.always) {
-                statusDiv.innerHTML = `Payload Created.<br>Confirm in Xaman App.<br><small>Ref: ${request.uuid}</small>`;
-                window.open(request.next.always, '_blank');
-            }
-        } catch (e) {
-            statusDiv.style.color = "#ef4444";
-            statusDiv.innerText = "Process Failed: " + e.message;
-            console.error(e);
-        }
-    };
-</script>
+            <div class="space-y-6">
+                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-semibold">Live Ledger Proof</h3>
+                <div class="h-48 overflow-y-auto space-y-3 pr-2 scrollbar-hide">
+                    <div class="text-[10px] font-mono text-gray-500 border-b border-white/5 pb-2">
+                        [WAITING FOR TX HASH...]
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <p class="text-[10px] text-gray-600 leading-tight">
+                        Protocol Issuer: <span class="text-gray-400">rMGVs4...</span><br>
+                        Revenue Vault: <span class="text-gray-400">rDZKzh...</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="p-8 text-center text-gray-600 text-[10px] uppercase tracking-widest">
+        &copy; 2026 INNOVATIVE APP WORLD LLC | INSTITUTIONAL RAILS FOR THE INTERNET OF VALUE
+    </footer>
 
 </body>
 </html>
