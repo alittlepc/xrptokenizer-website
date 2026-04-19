@@ -1,0 +1,8 @@
+{
+  "name": "IAW Institutional Rail",
+  "description": "0.33% RLUSD Institutional Settlement Rail for 1:1 parity tokenization.",
+  "version": "1.0.0",
+  "author": "Derek Benjamin Little",
+  "hook_hash": "PASTE_YOUR_HOOK_HASH_HERE",
+  "website": "https://xrptokenizer.com"
+}
