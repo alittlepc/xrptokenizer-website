@@ -3,97 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW Hub | Institutional Tokenization</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>IAW | Institutional Tokenizer</title>
+    <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0e17; color: #ffffff; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .brand-gradient { background: linear-gradient(90deg, #3b82f6 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-primary { background: #ffffff; color: #0a0e17; transition: all 0.3s ease; }
-        .btn-primary:hover { background: #e2e8f0; transform: translateY(-1px); }
+        :root {
+            --bg-deep: #0a0c10;
+            --bg-surface: #14171c;
+            --accent-gold: #c5a059;
+            --text-main: #f0f0f0;
+            --text-dim: #94a3b8;
+            --border: #2d333b;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+
+        .header p {
+            color: var(--text-dim);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 10px 0 30px 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .label {
+            font-size: 10px;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .value {
+            font-family: monospace;
+            font-size: 13px;
+            margin-top: 5px;
+            color: var(--text-main);
+            word-break: break-all;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--accent-gold);
+            color: var(--bg-deep);
+            border: none;
+            padding: 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.2);
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <div class="text-xl font-600 tracking-tight">IAW <span class="brand-gradient">HUB</span></div>
-        <div class="flex gap-6 items-center text-sm font-light text-gray-400">
-            <span>Docs</span>
-            <span>Ecosystem</span>
-            <button class="btn-primary px-5 py-2 rounded-full font-semibold text-xs uppercase tracking-widest">Connect Wallet</button>
-        </div>
-    </nav>
+<div class="container">
+    <div class="header">
+        <h1>Innovative App World</h1>
+        <p>Institutional Rail v2.2</p>
+    </div>
 
-    <main class="flex-grow flex flex-col items-center justify-center px-4">
+    <div class="card">
+        <div class="label">Authorized Publisher</div>
+        <div class="value">Innovative App World LLC</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Protocol Logic</div>
+        <div class="value">0.33% Institutional Toll</div>
+    </div>
+
+    <button class="btn-primary" id="launchBtn" onclick="initLaunch()">
+        Authorize & Install Hook
+    </button>
+
+    <div id="status">Ready to authorize via Xaman...</div>
+</div>
+
+<script>
+    // 1. REPLACE THIS WITH YOUR XAMAN API KEY
+    const xumm = new XummPkce('PASTE_YOUR_API_KEY_HERE');
+
+    async function initLaunch() {
+        const statusDiv = document.getElementById('status');
+        const btn = document.getElementById('launchBtn');
         
-        <div id="construction-notice" class="text-center max-w-2xl mb-12">
-            <h1 class="text-5xl font-light mb-4">The Future of <span class="brand-gradient italic">Value</span> is Loading.</h1>
-            <p class="text-gray-400 font-light leading-relaxed">
-                IAW Hub is currently undergoing a structural protocol upgrade to support the 
-                <strong>1:1 RLUSD Institutional Framework</strong>. 
-                Our domains are live, but minting is currently restricted to authorized partners. 
-                <br><br>
-                <span class="text-teal-400 font-600">STAY TUNED — Q2 2026</span>
-            </p>
-        </div>
+        statusDiv.innerText = "Opening Xaman...";
+        btn.disabled = true;
 
-        <div class="glass w-full max-w-5xl rounded-3xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        try {
+            const auth = await xumm.authorize();
             
-            <div class="space-y-6">
-                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-semibold">Tokenize Asset</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs text-gray-500 mb-2">Asset Name</label>
-                        <input type="text" placeholder="e.g. RealEstate_01" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:outline-none focus:border-teal-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-500 mb-2">Buy-In Parity (RLUSD)</label>
-                        <input type="number" value="1.00" readonly class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-teal-400 font-mono">
-                    </div>
-                    <button class="w-full py-4 border border-teal-500/30 text-teal-400 rounded-xl text-sm font-semibold hover:bg-teal-500/10 transition">Initialize </button>
-                </div>
-            </div>
+            if (auth.me.account) {
+                statusDiv.innerText = "Connected: " + auth.me.account;
+                
+                // 2. THIS IS THE TRANSACTION PAYLOAD
+                const payload = {
+                    TransactionType: "SetHook",
+                    Hooks: [
+                        {
+                            Hook: {
+                                // 3. REPLACE THIS WITH YOUR PUBLISHED HOOK HASH
+                                HookHash: "PASTE_YOUR_HOOK_HASH_HERE",
+                                HookOn: "0000000000000000",
+                                HookNamespace: "IAW_RAIL",
+                                HookApiVersion: 0
+                            }
+                        }
+                    ]
+                };
 
-            <div class="md:border-x border-white/10 px-0 md:px-8 space-y-6">
-                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-semibold">Protocol Metrics</h3>
-                <div class="space-y-6">
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs text-gray-400">Automated Toll (33bps)</span>
-                        <span class="text-xl font-mono text-white">0.33%</span>
-                    </div>
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs text-gray-400">Total RLUSD Locked</span>
-                        <span class="text-xl font-mono text-white">0.00</span>
-                    </div>
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs text-gray-400"> Status</span>
-                        <span class="text-xs bg-teal-500/20 text-teal-400 px-2 py-1 rounded">ACTIVE</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-semibold">Live Ledger Proof</h3>
-                <div class="h-48 overflow-y-auto space-y-3 pr-2 scrollbar-hide">
-                    <div class="text-[10px] font-mono text-gray-500 border-b border-white/5 pb-2">
-                        [WAITING FOR TX HASH...]
-                    </div>
-                </div>
-                <div class="pt-4">
-                    <p class="text-[10px] text-gray-600 leading-tight">
-                        Protocol Issuer: <span class="text-gray-400">rMGVs4...</span><br>
-                        Revenue Vault: <span class="text-gray-400">rDZKzh...</span>
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <footer class="p-8 text-center text-gray-600 text-[10px] uppercase tracking-widest">
-        &copy; 2026 INNOVATIVE APP WORLD LLC | INSTITUTIONAL RAILS FOR THE INTERNET OF VALUE
-    </footer>
+                const created = await xumm.payload.create(payload);
+                
+                if (created.next.always) {
+                    statusDiv.innerText = "Please sign the request in Xaman.";
+                    window.open(created.next.always, '_blank');
+                }
+            }
+        } catch (e) {
+            statusDiv.innerText = "Error: " + e.message;
+            btn.disabled = false;
+        }
+    }
+</script>
 
 </body>
 </html>
