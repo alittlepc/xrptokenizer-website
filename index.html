@@ -3,176 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW | Institutional Tokenizer</title>
-    <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>XRP Tokenizer | Institutional-Grade Settlement</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #0a0c10;
-            --bg-surface: #14171c;
-            --accent-gold: #c5a059;
-            --text-main: #f0f0f0;
-            --text-dim: #94a3b8;
-            --border: #2d333b;
+            --bg: #0a0a0a;
+            --surface: #161616;
+            --gold: #d4af37;
+            --text: #ffffff;
+            --text-dim: #a0a0a0;
+            --border: #2a2a2a;
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
             margin: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .header {
+            height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 440px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             text-align: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            border-bottom: 1px solid var(--border);
         }
 
-        .header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 26px;
-            color: var(--accent-gold);
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background: var(--gold);
+            margin-bottom: 2rem;
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -2px;
             margin: 0;
+            text-transform: uppercase;
         }
 
-        .header p {
-            color: var(--text-dim);
-            font-size: 11px;
+        .tagline {
+            color: var(--gold);
+            font-size: 1.2rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 10px 0 30px 0;
+            margin-top: 0.5rem;
+        }
+
+        /* The Grid */
+        .grid-section {
+            padding: 5rem 10%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--surface);
+            padding: 2rem;
             border: 1px solid var(--border);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            text-align: left;
+            border-radius: 4px;
+            transition: border 0.3s ease;
         }
 
-        .label {
-            font-size: 10px;
-            color: var(--accent-gold);
-            text-transform: uppercase;
-            font-weight: 600;
+        .card:hover {
+            border-color: var(--gold);
         }
 
-        .value {
-            font-family: monospace;
-            font-size: 13px;
-            margin-top: 5px;
-            color: var(--text-main);
-            word-break: break-all;
+        .card h3 {
+            color: var(--gold);
+            margin-top: 0;
         }
 
-        .btn-primary {
-            width: 100%;
-            background: var(--accent-gold);
-            color: var(--bg-deep);
-            border: none;
-            padding: 16px;
+        /* Action Section */
+        .cta-section {
+            padding: 5rem 10%;
+            text-align: center;
+            background: var(--surface);
+        }
+
+        .btn {
+            background: var(--gold);
+            color: #000;
+            padding: 1rem 3rem;
+            text-decoration: none;
             font-weight: 700;
-            border-radius: 6px;
-            cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
+            border-radius: 2px;
+            display: inline-block;
+            transition: transform 0.2s ease;
         }
 
-        .btn-primary:hover {
-            filter: brightness(1.2);
+        .btn:hover {
+            transform: scale(1.05);
         }
 
-        #status {
-            margin-top: 20px;
-            font-size: 12px;
+        footer {
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
             color: var(--text-dim);
+            border-top: 1px solid var(--border);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>Innovative App World</h1>
-        <p>Institutional Rail v2.2</p>
-    </div>
+    <section class="header">
+        <div class="logo-placeholder"></div> <h1>XRP Tokenizer</h1>
+        <div class="tagline">Institutional-Grade Settlement</div>
+        <p style="max-width: 600px; color: var(--text-dim); margin-top: 2rem;">
+            Provisioning 1:1 RLUSD-paired liquidity rails for the global migration of value. 
+            Engineered for precision, built for compliance.
+        </p>
+    </section>
 
-    <div class="card">
-        <div class="label">Authorized Publisher</div>
-        <div class="value">Innovative App World LLC</div>
-    </div>
+    <section class="grid-section">
+        <div class="card">
+            <h3>Standardized Issuance</h3>
+            <p>Every asset is anchored 1:1 to RLUSD liquidity, ensuring real-time parity and structural integrity for institutional trade.</p>
+        </div>
+        <div class="card">
+            <h3>Automated Harvest</h3>
+            <p>Utilizing the v1.7 Hook architecture to execute a 0.33% base-harvest on every settlement, providing transparent revenue logic.</p>
+        </div>
+        <div class="card">
+            <h3>Non-Custodial Rails</h3>
+            <p>Maintain total control. Our infrastructure provides the plumbing, while you maintain the keys to your institutional treasury.</p>
+        </div>
+    </section>
 
-    <div class="card">
-        <div class="label">Protocol Logic</div>
-        <div class="value">0.33% Institutional Toll</div>
-    </div>
+    <section class="cta-section">
+        <h2>The Release Window is Opening</h2>
+        <p>Phase 1 Provisioning for the v1.7 Hook Mainnet Release is underway.</p>
+        <a href="mailto:derek@innovativeappworld.com" class="btn">Inquire for Access</a>
+    </section>
 
-    <button class="btn-primary" id="launchBtn" onclick="initLaunch()">
-        Authorize & Install Hook
-    </button>
-
-    <div id="status">Ready to authorize via Xaman...</div>
-</div>
-
-<script>
-    // 1. REPLACE THIS WITH YOUR XAMAN API KEY
-    const xumm = new XummPkce('PASTE_YOUR_API_KEY_HERE');
-
-    async function initLaunch() {
-        const statusDiv = document.getElementById('status');
-        const btn = document.getElementById('launchBtn');
-        
-        statusDiv.innerText = "Opening Xaman...";
-        btn.disabled = true;
-
-        try {
-            const auth = await xumm.authorize();
-            
-            if (auth.me.account) {
-                statusDiv.innerText = "Connected: " + auth.me.account;
-                
-                // 2. THIS IS THE TRANSACTION PAYLOAD
-                const payload = {
-                    TransactionType: "SetHook",
-                    Hooks: [
-                        {
-                            Hook: {
-                                // 3. REPLACE THIS WITH YOUR PUBLISHED HOOK HASH
-                                HookHash: "PASTE_YOUR_HOOK_HASH_HERE",
-                                HookOn: "0000000000000000",
-                                HookNamespace: "IAW_RAIL",
-                                HookApiVersion: 0
-                            }
-                        }
-                    ]
-                };
-
-                const created = await xumm.payload.create(payload);
-                
-                if (created.next.always) {
-                    statusDiv.innerText = "Please sign the request in Xaman.";
-                    window.open(created.next.always, '_blank');
-                }
-            }
-        } catch (e) {
-            statusDiv.innerText = "Error: " + e.message;
-            btn.disabled = false;
-        }
-    }
-</script>
+    <footer>
+        &copy; 2026 Innovative App World LLC | A Scattered Recollection Project
+    </footer>
 
 </body>
 </html>
