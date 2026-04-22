@@ -10,7 +10,7 @@
   "network": "mainnet",
   "build": {
     "command": "make",
-    "main_file": "iaw_institutional_rail.c",
+    "main_file": "src/iaw_institutional_rail.c",
     "output": "v1_7_hook.wasm"
   }
 }
