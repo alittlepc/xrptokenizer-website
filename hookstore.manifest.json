@@ -2,11 +2,15 @@
   "name": "XRP Tokenizer Institutional Rail",
   "version": "1.7.0",
   "description": "Institutional-Grade 1:1 RLUSD-Paired Settlement Infrastructure with 0.33% Base-Harvest logic.",
-  "author": "Derek Benjamin Little | Innovative App World LLC",
+  "author": "Innovative App World LLC",
   "website": "https://xrptokenizer.com",
   "repository": "https://github.com/alittlepc/xrptokenizer-website",
   "category": "Settlement",
-  "hook_file": "iaw_institutional_rail.c",
   "license": "Proprietary",
-  "network": "mainnet"
+  "network": "mainnet",
+  "build": {
+    "command": "make",
+    "main_file": "iaw_institutional_rail.c",
+    "output": "v1_7_hook.wasm"
+  }
 }
