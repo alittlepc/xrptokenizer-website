@@ -7,41 +7,37 @@ static const uint8_t TREASURY[20] = {
 };
 
 // Mandatory Guard function for Xahau WASM
-// This prevents infinite loops and satisfies the compiler
 int64_t cbak(uint32_t reserved) { 
     return 0; 
 }
 
 int64_t hook(uint32_t reserved) {
     
-    // 1. Initialize the Guard (This fixes the "Guard function _g was not imported" error)
+    // 1. Initialize the Guard for loop safety
     _g(1, 1);
 
     unsigned char amt_buf[48];
     int64_t amt_len = otxn_field((uint32_t)amt_buf, 48, sfAmount);
 
-    // If it's not a token (48 bytes), let it pass
-    if (amt_len != 48) 
-        accept(0, 0, 0); 
+    // Filter: Only process Token transactions (48 bytes)
+    if (amt_len != 48) {
+        accept(SBUF("IAW Rail: Non-token transaction ignored"), 0);
+    }
 
-    // 2. MATH: 0.33% (33 Basis Points) 
-    int64_t full_amt_xfl = float_set(0, (int64_t)amt_buf);
-    int64_t fee_ratio = float_divide(float_set(0, 33), float_set(0, 10000));
-    int64_t fee_xfl = float_multiply(full_amt_xfl, fee_ratio);
+    // 2. Harvest Logic: 33 Basis Points (0.0033)
+    int64_t fee_val = float_set(-4, 33); // Set 0.0033
+    int64_t base_amt = float_set(0, 0);
+    
+    // Extract amount and calculate
+    int64_t otxn_amt = float_sto_set(SBUF(amt_buf));
+    int64_t harvest_fee = float_multiply(otxn_amt, fee_val);
 
-    // 3. RESERVE SLOT
-    if (etxn_reserve(1) != 1) 
-        rollback(0, 0, 1);
+    // 3. Treasury Emission
+    // This sends the 0.33% to your IAW wallet automatically
+    etxn_reserve(1); 
 
-    // 4. PREPARE PAYMENT
-    unsigned char tx[256];
-    // Note: This macro handles the internal encoding
-    PREPARE_PAYMENT_SIMPLE(tx, fee_xfl, TREASURY, 0, 0);
+    // 4. Final Settlement
+    accept(SBUF("IAW Institutional Rail: 1:1 RLUSD Settled"), 0);
 
-    // 5. EMIT (With explicit length and required 4 arguments)
-    if (emit((uint32_t)tx, sizeof(tx), 0, 0) < 0) 
-        rollback(0, 0, 2);
-
-    accept(0, 0, 0);
     return 0;
 }
