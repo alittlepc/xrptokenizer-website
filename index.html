@@ -88,9 +88,10 @@
             background: var(--light-gray);
             padding: 40px 10%;
             font-family: monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #9ca3af;
             text-align: center;
+            word-break: break-all;
         }
     </style>
 </head>
@@ -99,18 +100,18 @@
     <nav>
         <div class="logo">IAW RAIL</div>
         <div>
-            <a href="#" style="margin-right:20px; text-decoration:none; color:var(--text);">Protocol Info</a>
+            <a href="#" style="margin-right:20px; text-decoration:none; color:var(--text);">Protocol Specs</a>
             <a href="#" class="btn" style="padding:10px 20px;">Connect Wallet</a>
         </div>
     </nav>
 
     <div class="status-bar">
-        PROTOCOL STATE: 1:1 RLUSD PARITY (Sovereign Enforcement)
+        GOVERNANCE ACTIVE: 1:1 RLUSD PARITY (Sovereign Logic-Locked)
     </div>
 
     <header>
         <h1>Self-Sovereign Institutional Rail</h1>
-        <p class="subtitle">Mint to your own wallet. Keep your keys. Logic-lock your value.</p>
+        <p class="subtitle">Your Keys. Your Assets. Our Logic-Locked Settlement.</p>
         <a href="#" class="btn">Deploy Sovereign Asset</a>
     </header>
 
@@ -119,30 +120,31 @@
 
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">Who owns the tokens? <span>+</span></div>
-            <div class="faq-answer">You do. Every asset is minted directly to your self-sovereign wallet. IAW never sees your keys, holds your assets, or acts as a custodian. You maintain total control over your issuance.</div>
+            <div class="faq-answer">The user maintains 100% ownership. Every asset is minted directly to the user's self-sovereign wallet. Innovative App World never accesses private keys or acts as a custodian.</div>
         </div>
 
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">How is 1:1 Parity maintained? <span>+</span></div>
-            <div class="faq-answer">Value is enforced via the IAW Hook. When you mint your asset through our tool, the protocol logic is applied to the token, ensuring it strictly follows a 1:1 exchange relationship with RLUSD at the ledger level.</div>
+            <div class="faq-answer">Parity is programmed into the Hook. The protocol enforces a strict 1:1 exchange relationship with RLUSD at the ledger level, preventing price manipulation or deviation.</div>
         </div>
 
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">What is the 0.33% Integrity Fee? <span>+</span></div>
-            <div class="faq-answer">The IAW Hook applies a hard-coded 0.33% fee ($0x21) to all transactions moving through the rail. This automated settlement ensures institutional-grade infrastructure is maintained without manual intervention.</div>
+            <div class="faq-answer">A hard-coded 0.33% fee ($0x21) is applied automatically to all institutional movements. This ensures consistent, sub-second settlement and infrastructure maintenance.</div>
         </div>
 
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">How do Redemptions work? <span>+</span></div>
-            <div class="faq-answer">Redemptions are handled JIT (Just-In-Time) at the protocol level. The Hook facilitates the settlement of your sovereign token back into RLUSD in a single ledger cycle, providing a seamless and transparent exit path.</div>
+            <div class="faq-answer">Settlement is Just-In-Time (JIT). The Hook facilitates the conversion of sovereign tokens back into RLUSD within a single ledger cycle, ensuring liquidity without the need for traditional pools.</div>
         </div>
     </div>
 
-    <footer>
-        <p>NETWORK: XAHAU | HOOK_HASH: 0x... (Your Hash) | NAMESPACE: 0x... (Your ID)</p>
+<footer>
+        <p>NETWORK: XAHAU | TREASURY: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</p>
+        <p>IAW_HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1</p>
+        <p>NAMESPACE: 367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809</p>
         <p>&copy; 2026 Innovative App World LLC</p>
     </footer>
-
     <script>
         function toggleFaq(element) {
             const answer = element.nextElementSibling;
