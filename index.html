@@ -5,156 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IAW Institutional Rail | RWA Governance</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
     <style>
-        :root {
-            --bg: #ffffff;
-            --text: #1a1a1a;
-            --accent: #003366; 
-            --light-gray: #f9fafb;
-            --border: #e5e7eb;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 10%;
-            border-bottom: 1px solid var(--border);
-        }
-
+        :root { --bg: #ffffff; --text: #1a1a1a; --accent: #003366; --light-gray: #f9fafb; --border: #e5e7eb; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; line-height: 1.6; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 10%; border-bottom: 1px solid var(--border); }
         .logo { font-weight: 600; font-size: 1.2rem; color: var(--accent); }
-
-        header {
-            padding: 80px 10%;
-            text-align: center;
-            background: var(--light-gray);
-        }
-
-        h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 600; }
-        .subtitle { font-size: 1.2rem; color: #666; margin-bottom: 30px; }
-
-        .btn {
-            background: var(--accent);
-            color: white;
-            padding: 15px 35px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-bar {
-            background: #e0f2fe;
-            padding: 10px;
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .faq-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .faq-item {
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0;
-        }
-
-        .faq-question {
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .faq-answer {
-            margin-top: 10px;
-            color: #4b5563;
-            display: none; 
-        }
-
-        footer {
-            background: var(--light-gray);
-            padding: 40px 10%;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #9ca3af;
-            text-align: center;
-            word-break: break-all;
-        }
+        header { padding: 60px 10%; text-align: center; background: var(--light-gray); }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 5px; text-decoration: none; font-weight: 600; display: inline-block; cursor: pointer; border: none; }
+        .btn:hover { background: #002244; }
+        .status-bar { background: #e0f2fe; padding: 10px; text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+        .faq-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .faq-item { border-bottom: 1px solid var(--border); padding: 15px 0; }
+        .faq-question { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
+        .faq-answer { margin-top: 10px; color: #4b5563; display: none; }
+        footer { background: var(--light-gray); padding: 40px 10%; font-family: monospace; font-size: 0.7rem; color: #6b7280; text-align: center; word-break: break-all; }
+        .input-group { margin: 20px 0; }
+        input { padding: 12px; width: 280px; border: 1px solid var(--border); border-radius: 5px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">IAW RAIL</div>
-        <div>
-            <a href="#" style="margin-right:20px; text-decoration:none; color:var(--text);">Protocol Specs</a>
-            <a href="#" class="btn" style="padding:10px 20px;">Connect Wallet</a>
-        </div>
+        <button id="auth" class="btn" style="padding:10px 20px;" onclick="xumm.authorize()">Connect Xaman</button>
     </nav>
 
     <div class="status-bar">
-        GOVERNANCE ACTIVE: 1:1 RLUSD PARITY (Sovereign Logic-Locked)
+        XAHAU PROTOCOL: 1:1 RLUSD PARITY (Sovereign Logic-Locked)
     </div>
 
     <header>
-        <h1>Self-Sovereign Institutional Rail</h1>
-        <p class="subtitle">Your Keys. Your Assets. Our Logic-Locked Settlement.</p>
-        <a href="#" class="btn">Deploy Sovereign Asset</a>
+        <h1>Self-Sovereign RWA Mint</h1>
+        <p>User-Owned Keys. Protocol-Enforced Settlement. 0.33% Institutional Fee.</p>
+        
+        <div class="input-group">
+            <input type="text" id="assetName" placeholder="Enter Asset Name (e.g. DEBT_001)">
+            <button class="btn" onclick="mintSovereignAsset()">Deploy Logic-Locked Asset</button>
+        </div>
     </header>
 
     <div class="faq-container">
-        <h2>Protocol Specifications (FAQ)</h2>
-
+        <h2>Institutional Specifications</h2>
         <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">Who owns the tokens? <span>+</span></div>
-            <div class="faq-answer">The user maintains 100% ownership. Every asset is minted directly to the user's self-sovereign wallet. Innovative App World never accesses private keys or acts as a custodian.</div>
+            <div class="faq-question" onclick="toggleFaq(this)">Calculated Efficiency vs. SWIFT <span>+</span></div>
+            <div class="faq-answer">Traditional settlement takes 3-5 days and costs $25-$65 per message. Our JIT settlement rail executes in 2 seconds for a fixed 0.33% fee ($0x21), saving institutions up to 90% in operational friction.</div>
         </div>
-
         <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">How is 1:1 Parity maintained? <span>+</span></div>
-            <div class="faq-answer">Parity is programmed into the Hook. The protocol enforces a strict 1:1 exchange relationship with RLUSD at the ledger level, preventing price manipulation or deviation.</div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">What is the 0.33% Integrity Fee? <span>+</span></div>
-            <div class="faq-answer">A hard-coded 0.33% fee ($0x21) is applied automatically to all institutional movements. This ensures consistent, sub-second settlement and infrastructure maintenance.</div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">How do Redemptions work? <span>+</span></div>
-            <div class="faq-answer">Settlement is Just-In-Time (JIT). The Hook facilitates the conversion of sovereign tokens back into RLUSD within a single ledger cycle, ensuring liquidity without the need for traditional pools.</div>
+            <div class="faq-question" onclick="toggleFaq(this)">Sovereign Custody <span>+</span></div>
+            <div class="faq-answer">The issuer maintains 100% control of private keys. IAW only provides the immutable Hook (Governance Logic) which ensures parity and fee integrity.</div>
         </div>
     </div>
 
-<footer>
-        <p>NETWORK: XAHAU | TREASURY: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</p>
-        <p>IAW_HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1</p>
+    <footer>
+        <p>XAHAU NETWORK | DEREK SALARY WALLET: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</p>
+        <p>HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1</p>
         <p>NAMESPACE: 367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809</p>
         <p>&copy; 2026 Innovative App World LLC</p>
     </footer>
+
     <script>
-        function toggleFaq(element) {
-            const answer = element.nextElementSibling;
-            const span = element.querySelector('span');
-            if (answer.style.display === "block") {
-                answer.style.display = "none";
-                span.innerText = "+";
-            } else {
-                answer.style.display = "block";
-                span.innerText = "-";
+        // UI Interaction
+        function toggleFaq(el) {
+            const ans = el.nextElementSibling;
+            ans.style.display = (ans.style.display === "block") ? "none" : "block";
+        }
+
+        // Xaman Integration
+        const xumm = new Xumm('d0ecc892-9b58-40d0-a567-62e4781312f0');
+
+        async function mintSovereignAsset() {
+            const asset = document.getElementById('assetName').value || "IAW_RWA_ASSET";
+            
+            // URITokenMint payload with Hook attachment
+            const payload = {
+                TransactionType: "URITokenMint",
+                URI: btoa(asset).toUpperCase(),
+                Flags: 1,
+                Hooks: [{
+                    Hook: {
+                        HookHash: "6918936E980A5D642A0D884D41761F1193D42CA1",
+                        HookNamespace: "367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809",
+                        HookOn: "0000000000000000"
+                    }
+                }]
+            };
+
+            console.log("Creating payload for:", asset);
+            
+            try {
+                const p = await xumm.payload.create(payload);
+                if (p.next && p.next.always) {
+                    window.open(p.next.always, '_blank');
+                }
+            } catch (err) {
+                console.error("Payload creation failed", err);
+                alert("Please check your Xaman connection.");
             }
         }
     </script>
