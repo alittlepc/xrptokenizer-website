@@ -21,15 +21,14 @@
         .faq-question { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
         .faq-answer { margin-top: 10px; color: #4b5563; display: none; }
         footer { background: var(--light-gray); padding: 40px 10%; font-family: monospace; font-size: 0.7rem; color: #6b7280; text-align: center; word-break: break-all; }
-        .input-group { margin: 20px 0; }
-        input { padding: 12px; width: 280px; border: 1px solid var(--border); border-radius: 5px; font-size: 1rem; }
+        input { padding: 12px; width: 280px; border: 1px solid var(--border); border-radius: 5px; font-size: 1rem; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">IAW RAIL</div>
-        <button id="auth" class="btn" style="padding:10px 20px;" onclick="xumm.authorize()">Connect Xaman</button>
+        <button id="authButton" class="btn" style="padding:10px 20px;">Connect Xaman</button>
     </nav>
 
     <div class="status-bar">
@@ -42,7 +41,8 @@
         
         <div class="input-group">
             <input type="text" id="assetName" placeholder="Enter Asset Name (e.g. DEBT_001)">
-            <button class="btn" onclick="mintSovereignAsset()">Deploy Logic-Locked Asset</button>
+            <br>
+            <button id="mintButton" class="btn">Deploy Logic-Locked Asset</button>
         </div>
     </header>
 
@@ -50,11 +50,7 @@
         <h2>Institutional Specifications</h2>
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">Calculated Efficiency vs. SWIFT <span>+</span></div>
-            <div class="faq-answer">Traditional settlement takes 3-5 days and costs $25-$65 per message. Our JIT settlement rail executes in 2 seconds for a fixed 0.33% fee ($0x21), saving institutions up to 90% in operational friction.</div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">Sovereign Custody <span>+</span></div>
-            <div class="faq-answer">The issuer maintains 100% control of private keys. IAW only provides the immutable Hook (Governance Logic) which ensures parity and fee integrity.</div>
+            <div class="faq-answer">Traditional settlement takes 3-5 days and costs $25-$65 per message. Our JIT settlement rail executes in 2 seconds for a fixed 0.33% fee, saving institutions up to 90% in operational friction.</div>
         </div>
     </div>
 
@@ -62,23 +58,35 @@
         <p>XAHAU NETWORK | DEREK SALARY WALLET: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</p>
         <p>HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1</p>
         <p>NAMESPACE: 367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809</p>
-        <p>&copy; 2026 Innovative App World LLC</p>
     </footer>
 
     <script>
-        // UI Interaction
         function toggleFaq(el) {
             const ans = el.nextElementSibling;
             ans.style.display = (ans.style.display === "block") ? "none" : "block";
         }
 
-        // Xaman Integration
+        // 1. Initialize the Xumm PKCE SDK
         const xumm = new Xumm('d0ecc892-9b58-40d0-a567-62e4781312f0');
 
-        async function mintSovereignAsset() {
+        // 2. Handle the "Connect" Button
+        document.getElementById('authButton').onclick = () => {
+            xumm.authorize().catch(err => console.log('Auth Error:', err));
+        };
+
+        // 3. Listen for successful login to update the UI for the video
+        xumm.on("error", (err) => { console.error("Xumm Error:", err); });
+        xumm.on("success", async () => {
+            const state = await xumm.state();
+            document.getElementById('authButton').innerText = "Connected: " + state.me.account.slice(0,6) + "...";
+            console.log("Authenticated as:", state.me.account);
+        });
+
+        // 4. The Minting Logic
+        document.getElementById('mintButton').onclick = async () => {
             const asset = document.getElementById('assetName').value || "IAW_RWA_ASSET";
-            
-            // URITokenMint payload with Hook attachment
+            const { sdk } = await xumm.state(); // Get the authorized SDK instance
+
             const payload = {
                 TransactionType: "URITokenMint",
                 URI: btoa(asset).toUpperCase(),
@@ -92,18 +100,15 @@
                 }]
             };
 
-            console.log("Creating payload for:", asset);
-            
-            try {
-                const p = await xumm.payload.create(payload);
+            sdk.payload.create(payload).then(p => {
                 if (p.next && p.next.always) {
                     window.open(p.next.always, '_blank');
                 }
-            } catch (err) {
-                console.error("Payload creation failed", err);
-                alert("Please check your Xaman connection.");
-            }
-        }
+            }).catch(err => {
+                alert("Payload failed. Are you connected?");
+                console.error(err);
+            });
+        };
     </script>
 </body>
 </html>
