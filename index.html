@@ -3,156 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRP Tokenizer | Institutional-Grade Settlement</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>IAW Institutional Rail | RWA Tokenization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0a;
-            --surface: #161616;
-            --gold: #d4af37;
-            --text: #ffffff;
-            --text-dim: #a0a0a0;
-            --border: #2a2a2a;
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --accent: #003366; /* Deep Institutional Blue */
+            --light-gray: #f9fafb;
+            --border: #e5e7eb;
         }
 
         body {
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'Inter', sans-serif;
             margin: 0;
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        /* Hero Section */
-        .header {
-            height: 100vh;
+        /* Nav Bar */
+        nav {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            text-align: center;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 20px 10%;
             border-bottom: 1px solid var(--border);
         }
 
-        .logo-placeholder {
-            width: 120px;
-            height: 120px;
-            background: var(--gold);
-            margin-bottom: 2rem;
-            border-radius: 4px;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-        }
+        .logo { font-weight: 600; font-size: 1.2rem; color: var(--accent); }
 
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: -2px;
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        .tagline {
-            color: var(--gold);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-top: 0.5rem;
-        }
-
-        /* The Grid */
-        .grid-section {
-            padding: 5rem 10%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: var(--surface);
-            padding: 2rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            transition: border 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--gold);
-        }
-
-        .card h3 {
-            color: var(--gold);
-            margin-top: 0;
-        }
-
-        /* Action Section */
-        .cta-section {
-            padding: 5rem 10%;
+        /* Hero Section */
+        header {
+            padding: 80px 10%;
             text-align: center;
-            background: var(--surface);
+            background: var(--light-gray);
         }
+
+        h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 600; }
+        .subtitle { font-size: 1.2rem; color: #666; margin-bottom: 30px; }
 
         .btn {
-            background: var(--gold);
-            color: #000;
-            padding: 1rem 3rem;
+            background: var(--accent);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 5px;
             text-decoration: none;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: 2px;
+            font-weight: 600;
             display: inline-block;
-            transition: transform 0.2s ease;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        footer {
-            padding: 2rem;
+        /* Status Bar */
+        .status-bar {
+            background: #e0f2fe;
+            padding: 10px;
             text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* FAQ Section (Accordion) */
+        .faq-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .faq-answer {
+            margin-top: 10px;
+            color: #4b5563;
+            display: none; /* Hidden by default */
+        }
+
+        /* Technical Footer */
+        footer {
+            background: var(--light-gray);
+            padding: 40px 10%;
+            font-family: monospace;
             font-size: 0.8rem;
-            color: var(--text-dim);
-            border-top: 1px solid var(--border);
+            color: #9ca3af;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <section class="header">
-        <div class="logo-placeholder"></div> <h1>XRP Tokenizer</h1>
-        <div class="tagline">Institutional-Grade Settlement</div>
-        <p style="max-width: 600px; color: var(--text-dim); margin-top: 2rem;">
-            Provisioning 1:1 RLUSD-paired liquidity rails for the global migration of value. 
-            Engineered for precision, built for compliance.
-        </p>
-    </section>
+    <nav>
+        <div class="logo">IAW RAIL</div>
+        <div>
+            <a href="#" style="margin-right:20px; text-decoration:none; color:var(--text);">Transparency</a>
+            <a href="#" class="btn" style="padding:10px 20px;">Connect Wallet</a>
+        </div>
+    </nav>
 
-    <section class="grid-section">
-        <div class="card">
-            <h3>Standardized Issuance</h3>
-            <p>Every asset is anchored 1:1 to RLUSD liquidity, ensuring real-time parity and structural integrity for institutional trade.</p>
-        </div>
-        <div class="card">
-            <h3>Automated Harvest</h3>
-            <p>Utilizing the v1.7 Hook architecture to execute a 0.33% base-harvest on every settlement, providing transparent revenue logic.</p>
-        </div>
-        <div class="card">
-            <h3>Non-Custodial Rails</h3>
-            <p>Maintain total control. Our infrastructure provides the plumbing, while you maintain the keys to your institutional treasury.</p>
-        </div>
-    </section>
+    <div class="status-bar">
+        LIVE PARITY: 1 IAW = 1.0000 RLUSD (Logic-Locked)
+    </div>
 
-    <section class="cta-section">
-        <h2>The Release Window is Opening</h2>
-        <p>Phase 1 Provisioning for the v1.7 Hook Mainnet Release is underway.</p>
-        <a href="mailto:derek@innovativeappworld.com" class="btn">Inquire for Access</a>
-    </section>
+    <header>
+        <h1>Institutional Rail for RWA</h1>
+        <p class="subtitle">Just-In-Time Settlement. Protocol-Level Fees. No Liquidity Pools.</p>
+        <a href="#" class="btn">Mint Institutional Asset</a>
+    </header>
+
+    <div class="faq-container">
+        <h2>Protocol Specifications (FAQ)</h2>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How is 1:1 Parity maintained? <span>+</span></div>
+            <div class="faq-answer">Every IAW token is mathematically pegged to RLUSD. The Hook prevents any minting or movement unless backed 1:1 by reserves in the transparent IAW Vault.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">What is the 0.33% Integrity Fee? <span>+</span></div>
+            <div class="faq-answer">A hard-coded 0.33% fee ($0x21) is applied at the ledger level to all institutional transactions. This ensures sub-second settlement and network maintenance.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Why no Liquidity Pools? <span>+</span></div>
+            <div class="faq-answer">We utilize Just-In-Time (JIT) settlement. This eliminates slippage and impermanent loss, ensuring institutions always exit at exactly 1:1 value.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How do Redemptions work? <span>+</span></div>
+            <div class="faq-answer">We use a "Vault and Release" mechanism. Tokens are returned to the IAW Vault, which triggers an automated release of RLUSD. No tokens are burned, preserving the audit trail.</div>
+        </div>
+    </div>
 
     <footer>
-        &copy; 2026 Innovative App World LLC | A Scattered Recollection Project
+        <p>NETWORK: XAHAU | HOOK_HASH: 0x... (Paste Your Hash) | NAMESPACE: 0x... (Paste Your ID)</p>
+        <p>&copy; 2026 Innovative App World LLC</p>
     </footer>
 
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const span = element.querySelector('span');
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+                span.innerText = "+";
+            } else {
+                answer.style.display = "block";
+                span.innerText = "-";
+            }
+        }
+    </script>
 </body>
 </html>
