@@ -9,34 +9,28 @@
         :root { --bg: #ffffff; --text: #1a1a1a; --accent: #003366; --light-gray: #f9fafb; --border: #e5e7eb; --success: #10b981; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
         
-        /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 10%; border-bottom: 1px solid var(--border); background: white; }
         .logo { font-weight: 600; font-size: 1.5rem; color: var(--accent); letter-spacing: -0.5px; }
         .network-status { font-size: 0.8rem; font-weight: 700; color: var(--success); display: flex; align-items: center; }
         .dot { height: 8px; width: 8px; background-color: var(--success); border-radius: 50%; display: inline-block; margin-right: 8px; }
 
-        /* Hero Section */
         header { padding: 80px 10%; text-align: center; background: var(--light-gray); border-bottom: 1px solid var(--border); }
         h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 600; color: var(--accent); }
         .subtitle { font-size: 1.2rem; color: #666; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
         
-        /* Action Box */
         .mint-box { background: white; padding: 40px; border-radius: 12px; border: 1px solid var(--border); display: inline-block; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        input { padding: 15px; width: 320px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; transition: border 0.2s; }
-        input:focus { border-color: var(--accent); }
-        .btn { background: var(--accent); color: white; padding: 16px 40px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 1rem; transition: all 0.2s; }
-        .btn:hover { background: #002244; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { padding: 15px; width: 320px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; }
+        .btn { background: var(--accent); color: white; padding: 16px 40px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 1rem; }
+        .btn:hover { background: #002244; transform: translateY(-1px); }
 
-        /* FAQ Section */
         .faq-container { max-width: 900px; margin: 80px auto; padding: 0 20px; }
         h2 { font-size: 2rem; margin-bottom: 40px; text-align: center; color: var(--accent); }
         .faq-item { border-bottom: 1px solid var(--border); padding: 25px 0; }
         .faq-question { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; font-size: 1.15rem; color: var(--accent); }
         .faq-answer { margin-top: 15px; color: #4b5563; display: none; font-size: 1.05rem; }
         
-        /* Footer */
         footer { background: var(--light-gray); padding: 60px 10%; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #6b7280; text-align: center; border-top: 1px solid var(--border); }
-        .ledger-data { margin-top: 20px; color: #9ca3af; line-height: 1.8; }
+        .ledger-data { margin-top: 20px; color: #9ca3af; line-height: 1.8; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -48,10 +42,10 @@
 
     <header>
         <h1>Institutional RWA Rail</h1>
-        <p class="subtitle">Deploy sovereign, logic-locked assets in seconds. Automated 0.33% settlement fees and 1:1 RLUSD parity enforced at the ledger layer.</p>
+        <p class="subtitle">Deploy sovereign, logic-locked assets. Automated 0.33% settlement fees and 1:1 RLUSD parity enforced by the IAW Governance Hook.</p>
         
         <div class="mint-box">
-            <input type="text" id="assetName" placeholder="Enter Asset Name (e.g. DEBT_USD_001)">
+            <input type="text" id="assetName" placeholder="Asset Name (e.g. REAL_ESTATE_001)">
             <button class="btn" onclick="mintSovereignAsset()">Deploy Sovereign Asset</button>
         </div>
     </header>
@@ -61,22 +55,17 @@
         
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">Who owns the tokens? <span>+</span></div>
-            <div class="faq-answer">Ownership is 100% sovereign. Assets are minted directly to your self-sovereign wallet. XRP Tokenizer provides the governance logic (Hook) but never touches your private keys or maintains custody.</div>
+            <div class="faq-answer">Ownership is 100% sovereign. Assets are minted directly to your self-sovereign wallet. XRP Tokenizer provides the governance logic (Hook) but never touches your private keys.</div>
         </div>
 
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">How is 1:1 Parity maintained? <span>+</span></div>
-            <div class="faq-answer">Parity is enforced via the IAW Governance Hook. The protocol is hard-coded to strictly maintain a 1:1 exchange value with RLUSD, eliminating slippage and cross-currency friction for treasury managers.</div>
+            <div class="faq-answer">Parity is enforced via the IAW Governance Hook. The protocol is hard-coded to strictly maintain a 1:1 exchange value with RLUSD, eliminating slippage for treasury managers.</div>
         </div>
 
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">Calculated Efficiency vs. SWIFT <span>+</span></div>
-            <div class="faq-answer">Traditional SWIFT settlement involves 3-5 days of latency and $25-$65 in message fees. Our JIT settlement rail executes in sub-2 seconds for a fixed 0.33% fee, routing directly to the IAW Treasury.</div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">Multi-Transaction Distribution <span>+</span></div>
-            <div class="faq-answer">Our architecture allows for simultaneous distribution of asset value and fee settlement in a single ledger cycle, ensuring the 1:1 RLUSD value is preserved across all participants.</div>
+            <div class="faq-answer">Traditional SWIFT settlement involves 3-5 days of latency and $25-$65 in fees. Our JIT settlement rail executes in sub-2 seconds for a fixed 0.33% fee, routing directly to the IAW Treasury.</div>
         </div>
     </div>
 
@@ -90,40 +79,38 @@
     </footer>
 
     <script>
+        // FIXED FAQ LOGIC
         function toggleFaq(el) {
             const ans = el.nextElementSibling;
             const span = el.querySelector('span');
-            if (ans.style.display === "block") {
-                ans.style.display = "none";
-                span.innerText = "+";
-            } else {
-                ans.style.display = "block";
-                span.innerText = "-";
-            }
+            const isOpen = ans.style.display === "block";
+            ans.style.display = isOpen ? "none" : "block";
+            span.innerText = isOpen ? "+" : "-";
         }
 
+        // FIXED MINTING LOGIC (NO LIBRARIES REQUIRED)
         function mintSovereignAsset() {
-            const asset = document.getElementById('assetName').value || "IAW_RWA";
+            const assetName = document.getElementById('assetName').value || "IAW_RWA";
             
-            // Format the transaction for Xaman (Xumm)
+            // Generate the Xahau URITokenMint Transaction
             const tx = {
                 "TransactionType": "URITokenMint",
-                "URI": btoa(asset).toUpperCase(),
+                "URI": btoa(assetName).toUpperCase(),
                 "Flags": 1,
                 "Hooks": [{
                     "Hook": {
                         "HookHash": "6918936E980A5D642A0D884D41761F1193D42CA1",
-                        "HookNamespace: "367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809",
+                        "HookNamespace": "367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809",
                         "HookOn": "0000000000000000"
                     }
                 }]
             };
 
-            // Generate a direct Universal Link for the presentation
-            // This avoids 404/Error pages by handing the JSON directly to Xaman's detect tool
-            const xummUrl = "https://xumm.app/detect/xapp:xumm.tx?txjson=" + encodeURIComponent(JSON.stringify(tx));
+            // This is the direct Deep Link protocol for Xaman/Xumm
+            const xummLink = "https://xumm.app/detect/xapp:xumm.tx?txjson=" + encodeURIComponent(JSON.stringify(tx));
             
-            window.open(xummUrl, '_blank');
+            // Open the signing window
+            window.open(xummLink, '_blank');
         }
     </script>
 </body>
