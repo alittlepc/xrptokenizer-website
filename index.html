@@ -3,89 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAW Institutional Rail | RWA Governance</title>
+    <title>XRP Tokenizer | Institutional RWA Rail</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://xumm.app/assets/cdn/xumm-oauth2-pkce.js"></script>
     <style>
         :root { --bg: #ffffff; --text: #1a1a1a; --accent: #003366; --light-gray: #f9fafb; --border: #e5e7eb; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; line-height: 1.6; }
         nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 10%; border-bottom: 1px solid var(--border); }
-        .logo { font-weight: 600; font-size: 1.2rem; color: var(--accent); }
-        header { padding: 60px 10%; text-align: center; background: var(--light-gray); }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        .btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 5px; text-decoration: none; font-weight: 600; display: inline-block; cursor: pointer; border: none; }
-        .btn:hover { background: #002244; }
-        .status-bar { background: #e0f2fe; padding: 10px; text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--accent); }
-        .faq-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        .faq-item { border-bottom: 1px solid var(--border); padding: 15px 0; }
-        .faq-question { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
-        .faq-answer { margin-top: 10px; color: #4b5563; display: none; }
-        footer { background: var(--light-gray); padding: 40px 10%; font-family: monospace; font-size: 0.7rem; color: #6b7280; text-align: center; word-break: break-all; }
-        input { padding: 12px; width: 280px; border: 1px solid var(--border); border-radius: 5px; font-size: 1rem; margin-bottom: 10px; }
+        .logo { font-weight: 600; font-size: 1.5rem; color: var(--accent); letter-spacing: -0.5px; }
+        header { padding: 80px 10%; text-align: center; background: var(--light-gray); border-bottom: 1px solid var(--border); }
+        h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 600; }
+        .subtitle { font-size: 1.2rem; color: #666; margin-bottom: 40px; }
+        .mint-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid var(--border); display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        input { padding: 15px; width: 300px; border: 1px solid var(--border); border-radius: 5px; font-size: 1rem; margin-right: 10px; }
+        .btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 5px; font-weight: 600; cursor: pointer; border: none; font-size: 1rem; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .faq-container { max-width: 900px; margin: 80px auto; padding: 0 20px; }
+        .faq-item { border-bottom: 1px solid var(--border); padding: 25px 0; }
+        .faq-question { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; font-size: 1.1rem; }
+        .faq-answer { margin-top: 15px; color: #4b5563; display: none; font-size: 1rem; }
+        footer { background: var(--light-gray); padding: 60px 10%; font-family: monospace; font-size: 0.75rem; color: #6b7280; text-align: center; line-height: 2; word-break: break-all; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">IAW RAIL</div>
-        <button id="authButton" class="btn" style="padding:10px 20px;">Connect Xaman</button>
+        <div class="logo">XRP TOKENIZER</div>
+        <button id="authButton" class="btn btn-secondary" onclick="login()">Connect Xaman</button>
     </nav>
 
-    <div class="status-bar">
-        XAHAU PROTOCOL: 1:1 RLUSD PARITY (Sovereign Logic-Locked)
-    </div>
-
     <header>
-        <h1>Self-Sovereign RWA Mint</h1>
-        <p>User-Owned Keys. Protocol-Enforced Settlement. 0.33% Institutional Fee.</p>
+        <h1>Institutional RWA Rail</h1>
+        <p class="subtitle">Self-Sovereign Minting. 1:1 RLUSD Parity. 0.33% Logic-Locked Fees.</p>
         
-        <div class="input-group">
-            <input type="text" id="assetName" placeholder="Enter Asset Name (e.g. DEBT_001)">
-            <br>
-            <button id="mintButton" class="btn">Deploy Logic-Locked Asset</button>
+        <div class="mint-box">
+            <input type="text" id="assetName" placeholder="Asset Name (e.g. DEBT_001)">
+            <button class="btn" onclick="mintSovereignAsset()">Deploy Sovereign Asset</button>
         </div>
     </header>
 
     <div class="faq-container">
-        <h2>Institutional Specifications</h2>
+        <h2>Protocol Specifications</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Who owns the tokens? <span>+</span></div>
+            <div class="faq-answer">Ownership is 100% sovereign. Assets are minted directly to your self-sovereign wallet. XRP Tokenizer provides the governance logic (Hook) but never touches your private keys.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How is 1:1 Parity maintained? <span>+</span></div>
+            <div class="faq-answer">Parity is enforced at the protocol level. The IAW Hook is hard-coded to strictly maintain a 1:1 exchange value with RLUSD, eliminating slippage and price discovery risk.</div>
+        </div>
+
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">Calculated Efficiency vs. SWIFT <span>+</span></div>
-            <div class="faq-answer">Traditional settlement takes 3-5 days and costs $25-$65 per message. Our JIT settlement rail executes in 2 seconds for a fixed 0.33% fee, saving institutions up to 90% in operational friction.</div>
+            <div class="faq-answer">Traditional settlement takes 3-5 days and costs $25-$65 per message. Our JIT settlement rail executes in 2 seconds for a fixed 0.33% fee, automatically routing to the designated Treasury.</div>
         </div>
     </div>
 
     <footer>
-        <p>XAHAU NETWORK | DEREK SALARY WALLET: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</p>
-        <p>HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1</p>
-        <p>NAMESPACE: 367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809</p>
+        <div>XAHAU NETWORK | TREASURY: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c</div>
+        <div>IAW_HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1</div>
+        <div>NAMESPACE: 367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809</div>
+        <div>&copy; 2026 Innovative App World LLC</div>
     </footer>
 
     <script>
         function toggleFaq(el) {
             const ans = el.nextElementSibling;
             ans.style.display = (ans.style.display === "block") ? "none" : "block";
+            el.querySelector('span').innerText = (ans.style.display === "block") ? "-" : "+";
         }
 
-        // 1. Initialize the Xumm PKCE SDK
+        // Use your verified API Key
         const xumm = new Xumm('d0ecc892-9b58-40d0-a567-62e4781312f0');
 
-        // 2. Handle the "Connect" Button
-        document.getElementById('authButton').onclick = () => {
-            xumm.authorize().catch(err => console.log('Auth Error:', err));
-        };
+        async function login() {
+            try {
+                await xumm.authorize();
+            } catch (e) {
+                console.error("Auth error", e);
+            }
+        }
 
-        // 3. Listen for successful login to update the UI for the video
-        xumm.on("error", (err) => { console.error("Xumm Error:", err); });
         xumm.on("success", async () => {
             const state = await xumm.state();
-            document.getElementById('authButton').innerText = "Connected: " + state.me.account.slice(0,6) + "...";
-            console.log("Authenticated as:", state.me.account);
+            document.getElementById('authButton').innerText = "Connected: " + state.me.account.slice(0,6);
         });
 
-        // 4. The Minting Logic
-        document.getElementById('mintButton').onclick = async () => {
-            const asset = document.getElementById('assetName').value || "IAW_RWA_ASSET";
-            const { sdk } = await xumm.state(); // Get the authorized SDK instance
+        async function mintSovereignAsset() {
+            const asset = document.getElementById('assetName').value || "IAW_RWA";
+            
+            // Check state before proceeding
+            const state = await xumm.state();
+            if (!state.me.account) {
+                // If not connected, trigger login instead of showing an alert
+                return login();
+            }
 
             const payload = {
                 TransactionType: "URITokenMint",
@@ -100,15 +115,12 @@
                 }]
             };
 
-            sdk.payload.create(payload).then(p => {
+            state.sdk.payload.create(payload).then(p => {
                 if (p.next && p.next.always) {
                     window.open(p.next.always, '_blank');
                 }
-            }).catch(err => {
-                alert("Payload failed. Are you connected?");
-                console.error(err);
             });
-        };
+        }
     </script>
 </body>
 </html>
