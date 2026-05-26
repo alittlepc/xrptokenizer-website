@@ -12,7 +12,7 @@
         .card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; }
         input, button { width: 100%; padding: 14px; margin: 10px 0; border-radius: 6px; border: 1px solid var(--border); background: #161b22; color: white; }
         button { background: var(--accent); font-weight: bold; cursor: pointer; }
-        #status { margin-top: 20px; font-size: 14px; padding: 10px; display: none; }
+        #status { margin-top: 20px; font-size: 14px; padding: 10px; display: none; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -26,31 +26,41 @@
     </div>
 
     <script>
+        // Your specific API Key from the Developer Console
+        const XAMAN_API_KEY = "d0ecc892-9b58-40d0-a567-62e4781312f0";
         const IAW_HOOK_HASH = "DAC4E17E0F4EB8676967CEB009EB2C45217E01629A682BB9D8C3DB2AC35873EB";
         
         async function mintAndBind() {
             const status = document.getElementById('status');
             status.style.display = "block";
-            status.innerText = "Initializing Multi-Step Asset Issuance...";
+            status.style.background = "#1f2937";
+            status.innerText = "Initializing connection to Xaman...";
 
             try {
-                // Flow: 
-                // 1. Generate new Issuer Account
-                // 2. SetHook(IAW_HOOK_HASH) to issuer
-                // 3. Issue Token
-                
-                const payload = {
-                    txjson: {
-                        TransactionType: "SetHook",
-                        Account: "ISSUER_ADDRESS_PLACEHOLDER", // Derived from user wallet flow
-                        Hooks: [{ Hook: { HookHash: IAW_HOOK_HASH, HookApiVersion: 0, CreateCode: 1 } }]
-                    }
-                };
-                
-                status.innerText = "Binding Hook to Issuer... Asset now generates IAW velocity yield.";
-                // Integration with Xaman API goes here
+                // Sending payload to Xaman API
+                const response = await fetch("https://xumm.app/api/v1/platform/payload", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": XAMAN_API_KEY
+                    },
+                    body: JSON.stringify({
+                        txjson: {
+                            TransactionType: "SetHook",
+                            // In a live scenario, the user address would be dynamic
+                            Account: document.getElementById('userAddress').value,
+                            Hooks: [{ Hook: { HookHash: IAW_HOOK_HASH, HookApiVersion: 0, CreateCode: 1 } }]
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                status.style.background = "#065f46";
+                status.innerText = "Payload created! Scan the QR code in Xaman to complete binding.";
+                console.log(data);
             } catch (e) {
-                status.innerText = "Deployment Fault: " + e.message;
+                status.style.background = "#991b1b";
+                status.innerText = "Deployment Fault: " + e.message + ". Ensure your server allows cross-origin requests.";
             }
         }
     </script>
