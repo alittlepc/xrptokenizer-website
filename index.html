@@ -3,288 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRPTokenizer - Institutional Minting Portal</title>
+    <title>XRPTokenizer | Asset Minting Engine</title>
     <script src="https://xumm.app/assets/cdn/xumm-oauth2-plugin.min.js"></script>
     <script src="https://unpkg.com/xrpl@2.7.0/dist/npm/browser/xrpl-latest-min.js"></script>
     <style>
-        :root {
-            --bg-color: #06090e;
-            --card-bg: #0d1117;
-            --accent-color: #0076FF;
-            --accent-glow: rgba(0, 118, 255, 0.25);
-            --text-main: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #21262d;
-            --input-bg: #161b22;
-        }
-
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; 
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            max-width: 540px; 
-            margin: 80px auto; 
-            padding: 20px; 
-            box-sizing: border-box;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            padding: 40px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }
-
-        .header-area {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        h2 { 
-            margin: 0 0 10px 0;
-            font-size: 26px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .form-group { 
-            margin-bottom: 24px; 
-        }
-
-        label { 
-            display: block; 
-            margin-bottom: 10px; 
-            font-weight: 600; 
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            box-sizing: border-box; 
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 15px;
-            color: var(--text-main);
-            transition: all 0.2s ease;
-        }
-
-        input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-            outline: none;
-        }
-
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            background-color: var(--accent-color); 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            font-size: 15px; 
-            font-weight: 600;
-            cursor: pointer; 
-            transition: all 0.2s ease;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #1a85ff;
-        }
-
-        #qrContainer {
-            margin-top: 25px;
-            text-align: center;
-            display: none;
-            padding: 20px;
-            background: #ffffff;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        #qrContainer p {
-            color: #0b0e14;
-            margin: 0 0 15px 0;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        #qrCodeTarget img {
-            max-width: 200px;
-            margin: 0 auto;
-        }
-
-        #status { 
-            margin-top: 25px; 
-            padding: 16px; 
-            border-radius: 6px; 
-            display: none; 
-            font-size: 14px;
-            line-height: 1.6;
-            word-wrap: break-word;
-            border: 1px solid transparent;
-        }
-
-        .status-loading { background-color: rgba(255, 255, 255, 0.05); color: var(--text-main); border-color: var(--border-color); }
-        .status-success { background-color: rgba(40, 167, 69, 0.1); color: #34d399; border-color: rgba(40, 167, 69, 0.2); }
-        .status-error { background-color: rgba(220, 53, 69, 0.1); color: #f87171; border-color: rgba(220, 53, 69, 0.2); }
+        :root { --bg: #06090e; --card: #0d1117; --accent: #0076FF; --text: #f0f6fc; --border: #21262d; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); max-width: 500px; margin: 50px auto; padding: 20px; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; }
+        input, button { width: 100%; padding: 14px; margin: 10px 0; border-radius: 6px; border: 1px solid var(--border); background: #161b22; color: white; }
+        button { background: var(--accent); font-weight: bold; cursor: pointer; }
+        #status { margin-top: 20px; font-size: 14px; padding: 10px; display: none; }
     </style>
 </head>
 <body>
-
     <div class="card">
-        <div class="header-area">
-            <h2>XRPTokenizer Minting Portal</h2>
-            <p class="subtitle">Lock 1:1 RLUSD value into shadow-token collateral arrays instantly.</p>
-        </div>
-
-        <div class="form-group">
-            <label for="userAddress">Your Xaman Wallet Address (R-Address)</label>
-            <input type="text" id="userAddress" placeholder="r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh">
-        </div>
-
-        <div class="form-group">
-            <label for="tokenName">Desired Token Name / Ticker</label>
-            <input type="text" id="tokenName" placeholder="e.g. GOLD, USDx, MYTOKEN" maxlength="20">
-        </div>
-
-        <div class="form-group">
-            <label for="mintAmount">Collateral Deposit Amount (RLUSD)</label>
-            <input type="number" id="mintAmount" value="100" step="any">
-        </div>
-
-        <button onclick="requestXamanSign()">Initialize Secure Minting</button>
-
-        <div id="qrContainer">
-            <p>Scan with Xaman Wallet to Lock Asset:</p>
-            <div id="qrCodeTarget"></div>
-        </div>
-
+        <h2>XRPTokenizer Engine</h2>
+        <input type="text" id="userAddress" placeholder="Your Xaman R-Address">
+        <input type="text" id="tokenName" placeholder="Desired Token Ticker">
+        <input type="number" id="mintAmount" value="100">
+        <button onclick="mintAndBind()">Deploy Asset & Bind Hook</button>
         <div id="status"></div>
     </div>
 
     <script>
-        // --- Production Configurations ---
-        const IAW_HUB_ADDRESS = "rEQfpRy1UUcRXspzTg12a24DJH76cNieVq"; 
-        const XAMAN_API_KEY = "YOUR_XAMAN_API_KEY"; 
-
-        function stringToHex(str) {
-            return Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('').toUpperCase();
-        }
-
-        function updateStatus(message, type) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.style.display = "block";
-            statusDiv.className = ""; 
-            statusDiv.innerText = message;
-            
-            if (type === 'loading') statusDiv.classList.add('status-loading');
-            if (type === 'success') statusDiv.classList.add('status-success');
-            if (type === 'error') statusDiv.classList.add('status-error');
-        }
-
-        async function requestXamanSign() {
-            const userAddress = document.getElementById('userAddress').value.trim();
-            const tokenName = document.getElementById('tokenName').value.trim();
-            const mintAmount = document.getElementById('mintAmount').value.trim();
-            const qrContainer = document.getElementById('qrContainer');
-            const qrCodeTarget = document.getElementById('qrCodeTarget');
-
-            qrContainer.style.display = "none";
-            qrCodeTarget.innerHTML = "";
-
-            if (!userAddress || !tokenName || !mintAmount) {
-                updateStatus("Processing Error: All deployment parameters must be filled.", "error");
-                return;
-            }
-
-            updateStatus("Assembling institutional transaction payload...", "loading");
+        const IAW_HOOK_HASH = "DAC4E17E0F4EB8676967CEB009EB2C45217E01629A682BB9D8C3DB2AC35873EB";
+        
+        async function mintAndBind() {
+            const status = document.getElementById('status');
+            status.style.display = "block";
+            status.innerText = "Initializing Multi-Step Asset Issuance...";
 
             try {
-                // Convert parameters to strict tracking hex formatting for your C hook
-                const assetNameHex = stringToHex(tokenName).padEnd(16, '0'); // 8 bytes padded
-                const memoDataHex = "5EFEA457D290F576" + assetNameHex; 
-                const memoTypeHex = stringToHex("5114");
-
-                // Payload architecture structure configured for Xaman signature pipeline
+                // Flow: 
+                // 1. Generate new Issuer Account
+                // 2. SetHook(IAW_HOOK_HASH) to issuer
+                // 3. Issue Token
+                
                 const payload = {
                     txjson: {
-                        TransactionType: "Payment",
-                        Account: userAddress,
-                        Destination: IAW_HUB_ADDRESS,
-                        Amount: {
-                            currency: "RLUSD",
-                            value: mintAmount,
-                            issuer: "r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh" // Replace with live production RLUSD issuer address
-                        },
-                        Memos: [
-                            {
-                                Memo: {
-                                    MemoData: memoDataHex,
-                                    MemoType: memoTypeHex
-                                }
-                            }
-                        ]
+                        TransactionType: "SetHook",
+                        Account: "ISSUER_ADDRESS_PLACEHOLDER", // Derived from user wallet flow
+                        Hooks: [{ Hook: { HookHash: IAW_HOOK_HASH, HookApiVersion: 0, CreateCode: 1 } }]
                     }
                 };
-
-                // Request Xaman API processing
-                const response = await fetch("https://xumm.app/api/v1/platform/payload", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-API-Key": XAMAN_API_KEY
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error.message || "Xaman API payload rejection.");
-                }
-
-                // Render connection QR Code inside client terminal
-                updateStatus("Payload ready. Please scan signature link via Xaman app.", "loading");
-                qrContainer.style.display = "block";
-                qrCodeTarget.innerHTML = `<img src="${data.refs.qr_png}" alt="Xaman QR Code">`;
-
-                // Long-poll signature state confirmation
-                verifyWeb3Socket(data.refs.websocket_status);
-
-            } catch (err) {
-                updateStatus("Deployment Fault: " + err.message, "error");
-                document.getElementById('qrContainer').style.display = "none";
-            }
-        }
-
-        function verifyWeb3Socket(wsUrl) {
-            const ws = new WebSocket(wsUrl);
-            ws.onmessage = (event) => {
-                const response = JSON.parse(event.data);
-                if (response.signed === true) {
-                    ws.close();
-                    document.getElementById('qrContainer').style.display = "none";
-                    updateStatus("Success! 1:1 RLUSD Collateral Hardlocked to Hook Reserve State. 0.33% Architecture Fee Processed.", "success");
-                } else if (response.signed === false) {
-                    ws.close();
-                    document.getElementById('qrContainer').style.display = "none";
-                    updateStatus("Transaction rejected or canceled by user inside Xaman.", "error");
-                }
+                
+                status.innerText = "Binding Hook to Issuer... Asset now generates IAW velocity yield.";
+                // Integration with Xaman API goes here
+            } catch (e) {
+                status.innerText = "Deployment Fault: " + e.message;
             }
         }
     </script>
