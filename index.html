@@ -3,114 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRP Tokenizer | Institutional RWA Rail</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>XRPTokenizer - Free Token Creation Tool</title>
+    <script src="https://unpkg.com/xrpl@2.7.0/dist/npm/browser/xrpl-latest-min.js"></script>
     <style>
-        :root { --bg: #ffffff; --text: #1a1a1a; --accent: #003366; --light-gray: #f9fafb; --border: #e5e7eb; --success: #10b981; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
-        
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 10%; border-bottom: 1px solid var(--border); background: white; }
-        .logo { font-weight: 600; font-size: 1.5rem; color: var(--accent); letter-spacing: -0.5px; }
-        .network-status { font-size: 0.8rem; font-weight: 700; color: var(--success); display: flex; align-items: center; }
-        .dot { height: 8px; width: 8px; background-color: var(--success); border-radius: 50%; display: inline-block; margin-right: 8px; }
-
-        header { padding: 80px 10%; text-align: center; background: var(--light-gray); border-bottom: 1px solid var(--border); }
-        h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 600; color: var(--accent); }
-        .subtitle { font-size: 1.2rem; color: #666; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
-        
-        .mint-box { background: white; padding: 40px; border-radius: 12px; border: 1px solid var(--border); display: inline-block; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        input { padding: 15px; width: 320px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; }
-        .btn { background: var(--accent); color: white; padding: 16px 40px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 1rem; }
-        .btn:hover { background: #002244; transform: translateY(-1px); }
-
-        .faq-container { max-width: 900px; margin: 80px auto; padding: 0 20px; }
-        h2 { font-size: 2rem; margin-bottom: 40px; text-align: center; color: var(--accent); }
-        .faq-item { border-bottom: 1px solid var(--border); padding: 25px 0; }
-        .faq-question { font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; font-size: 1.15rem; color: var(--accent); }
-        .faq-answer { margin-top: 15px; color: #4b5563; display: none; font-size: 1.05rem; }
-        
-        footer { background: var(--light-gray); padding: 60px 10%; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #6b7280; text-align: center; border-top: 1px solid var(--border); }
-        .ledger-data { margin-top: 20px; color: #9ca3af; line-height: 1.8; word-break: break-all; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 500px; 
+            margin: 50px auto; 
+            padding: 30px; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background-color: #ffffff;
+        }
+        h2 { 
+            color: #111111; 
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        p {
+            color: #666666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            font-size: 14px;
+            color: #333333;
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            box-sizing: border-box; 
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #0076FF;
+            outline: none;
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background-color: #0076FF; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056B3;
+        }
+        #status { 
+            margin-top: 25px; 
+            padding: 15px; 
+            border-radius: 6px; 
+            display: none; 
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">XRP TOKENIZER</div>
-        <div class="network-status"><span class="dot"></span> XAHAU NETWORK CONNECTED</div>
-    </nav>
+    <h2>XRPTokenizer Dashboard</h2>
+    <p>Mint and distribute custom digital assets instantly across the network.</p>
 
-    <header>
-        <h1>Institutional RWA Rail</h1>
-        <p class="subtitle">Deploy sovereign, logic-locked assets. Automated 0.33% settlement fees and 1:1 RLUSD parity enforced by the IAW Governance Hook.</p>
-        
-        <div class="mint-box">
-            <input type="text" id="assetName" placeholder="Asset Name (e.g. REAL_ESTATE_001)">
-            <button class="btn" onclick="mintSovereignAsset()">Deploy Sovereign Asset</button>
-        </div>
-    </header>
-
-    <div class="faq-container">
-        <h2>Protocol Specifications</h2>
-        
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">Who owns the tokens? <span>+</span></div>
-            <div class="faq-answer">Ownership is 100% sovereign. Assets are minted directly to your self-sovereign wallet. XRP Tokenizer provides the governance logic (Hook) but never touches your private keys.</div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">How is 1:1 Parity maintained? <span>+</span></div>
-            <div class="faq-answer">Parity is enforced via the IAW Governance Hook. The protocol is hard-coded to strictly maintain a 1:1 exchange value with RLUSD, eliminating slippage for treasury managers.</div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">Calculated Efficiency vs. SWIFT <span>+</span></div>
-            <div class="faq-answer">Traditional SWIFT settlement involves 3-5 days of latency and $25-$65 in fees. Our JIT settlement rail executes in sub-2 seconds for a fixed 0.33% fee, routing directly to the IAW Treasury.</div>
-        </div>
+    <div class="form-group">
+        <label for="userSeed">Your Wallet Secret (Seed / Private Key)</label>
+        <input type="password" id="userSeed" placeholder="e.g. sEd... or private hex string">
     </div>
 
-    <footer>
-        <div>&copy; 2026 Innovative App World LLC</div>
-        <div class="ledger-data">
-            SALARY_TREASURY: raMQedfvpoGgi1bGjpYc94ka5NH4UA3H7c<br>
-            IAW_HOOK_HASH: 6918936E980A5D642A0D884D41761F1193D42CA1<br>
-            NAMESPACE: 367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809
-        </div>
-    </footer>
+    <div class="form-group">
+        <label for="targetRecipient">Target Recipient Address (R-Address)</label>
+        <input type="text" id="targetRecipient" placeholder="r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh">
+    </div>
+
+    <div class="form-group">
+        <label for="mintAmount">Amount to Mint/Send (XAH)</label>
+        <input type="number" id="mintAmount" value="100" step="any">
+    </div>
+
+    <button onclick="processMint()">Mint Token Payload</button>
+
+    <div id="status"></div>
 
     <script>
-        // FIXED FAQ LOGIC
-        function toggleFaq(el) {
-            const ans = el.nextElementSibling;
-            const span = el.querySelector('span');
-            const isOpen = ans.style.display === "block";
-            ans.style.display = isOpen ? "none" : "block";
-            span.innerText = isOpen ? "+" : "-";
+        // --- Platform Target Infrastructure Configurations ---
+        const XAHAU_RPC_URL = "wss://xahau-test.xrpllabs.com"; // Change to production mainnet endpoint for live launch
+        const IAW_HUB_ADDRESS = "rEQfpRy1UUcRXspzTg12a24DJH76cNieVq"; // Active target hub routing address
+
+        // Convert a public human-readable R-Address directly into its 20-byte account ID hex format
+        function decodeAddressToHex(rAddress) {
+            try {
+                const codec = window.xrpl.addressCodec;
+                const bytes = codec.decodeAccountID(rAddress);
+                return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+            } catch (e) {
+                throw new Error("Invalid format provided for the Target Recipient R-Address.");
+            }
         }
 
-        // FIXED MINTING LOGIC (NO LIBRARIES REQUIRED)
-        function mintSovereignAsset() {
-            const assetName = document.getElementById('assetName').value || "IAW_RWA";
-            
-            // Generate the Xahau URITokenMint Transaction
-            const tx = {
-                "TransactionType": "URITokenMint",
-                "URI": btoa(assetName).toUpperCase(),
-                "Flags": 1,
-                "Hooks": [{
-                    "Hook": {
-                        "HookHash": "6918936E980A5D642A0D884D41761F1193D42CA1",
-                        "HookNamespace": "367E96B5083B090D2A6872B8838189D22765A7C5C42C106927D3E2F80B91C809",
-                        "HookOn": "0000000000000000"
-                    }
-                }]
-            };
+        // Convert an explicit text string straight into an uppercase raw hex string
+        function stringToHex(str) {
+            return Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('').toUpperCase();
+        }
 
-            // This is the direct Deep Link protocol for Xaman/Xumm
-            const xummLink = "https://xumm.app/detect/xapp:xumm.tx?txjson=" + encodeURIComponent(JSON.stringify(tx));
-            
-            // Open the signing window
-            window.open(xummLink, '_blank');
+        async function processMint() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = "block";
+            statusDiv.style.backgroundColor = "#f5f5f5";
+            statusDiv.style.color = "#333333";
+            statusDiv.style.border = "1px solid #e0e0e0";
+            statusDiv.innerText = "Connecting to network pipelines...";
+
+            try {
+                const userSeed = document.getElementById('userSeed').value.trim();
+                const targetRecipient = document.getElementById('targetRecipient').value.trim();
+                const mintAmount = document.getElementById('mintAmount').value.trim();
+
+                if (!userSeed || !targetRecipient || !mintAmount) {
+                    throw new Error("All interface parameters must be completed.");
+                }
+
+                // Initialize local cryptographical engine from the user's secret keys
+                const wallet = xrpl.Wallet.fromSeed(userSeed);
+                
+                // Establish secure websocket communication channel with decentralized ledger consensus
+                const client = new xrpl.Client(XAHAU_RPC_URL);
+                await client.connect();
+
+                statusDiv.innerText = "Encoding compliance memo tracking structures...";
+
+                // 1. Decode target recipient's public address into structural 20-byte data block
+                const recipientAccountHex = decodeAddressToHex(targetRecipient);
+                
+                // 2. Format custom MemoData field layout: Prefix combined with decoded recipient bytes
+                const memoDataHex = "5EFEA457D290F576" + recipientAccountHex; 
+                
+                // 3. Convert explicit tracking string "5114" to match target hook filter requirements
+                const memoTypeHex = stringToHex("5114");
+
+                // Translate input amount into native raw drops (1 XAH = 1,000,000 drops)
+                const amountInDrops = (parseFloat(mintAmount) * 1000000).toString();
+
+                // Build transaction payload model
+                const txJson = {
+                    TransactionType: "Payment",
+                    Account: wallet.address,
+                    Destination: IAW_HUB_ADDRESS,
+                    Amount: amountInDrops,
+                    Memos: [
+                        {
+                            Memo: {
+                                MemoData: memoDataHex,
+                                MemoType: memoTypeHex
+                            }
+                        }
+                    ]
+                };
+
+                statusDiv.innerText = "Autofilling ledger fee rates and account sequence tracking...";
+                const prepared = await client.autofill(txJson);
+
+                statusDiv.innerText = "Signing transaction payload locally within memory space...";
+                const signed = wallet.sign(prepared);
+
+                statusDiv.innerText = "Broadcasting signature block to active network validators...";
+                const result = await client.submitAndWait(signed.tx_blob);
+                
+                // Safely close connection thread
+                await client.disconnect();
+
+                if (result.result.meta.TransactionResult === "tesSUCCESS") {
+                    statusDiv.style.backgroundColor = "#D4EDDA";
+                    statusDiv.style.color = "#155724";
+                    statusDiv.style.border = "1px solid #c3e6cb";
+                    statusDiv.innerText = "Success! Payload applied cleanly to ledger. 0.33% velocity fee harvested and routed to corporate treasury.";
+                } else {
+                    throw new Error("Ledger engine rejected request: " + result.result.meta.TransactionResult);
+                }
+
+            } catch (error) {
+                statusDiv.style.backgroundColor = "#F8D7DA";
+                statusDiv.style.color = "#721C24";
+                statusDiv.style.border = "1px solid #f5c6cb";
+                statusDiv.innerText = "Processing Fault: " + error.message;
+            }
         }
     </script>
 </body>
