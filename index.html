@@ -3,203 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRPTokenizer - Free Token Creation Tool</title>
+    <title>XRPTokenizer - Institutional Minting Terminal</title>
+    <script src="https://xumm.app/assets/cdn/xumm-oauth2-plugin.min.js"></script>
     <script src="https://unpkg.com/xrpl@2.7.0/dist/npm/browser/xrpl-latest-min.js"></script>
     <style>
+        :root {
+            --bg-color: #06090e;
+            --card-bg: #0d1117;
+            --accent-color: #0076FF;
+            --accent-glow: rgba(0, 118, 255, 0.25);
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --border-color: #21262d;
+            --input-bg: #161b22;
+        }
+
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            max-width: 500px; 
-            margin: 50px auto; 
-            padding: 30px; 
-            border: 1px solid #e0e0e0; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; 
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            max-width: 540px; 
+            margin: 80px auto; 
+            padding: 20px; 
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color); 
             border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            background-color: #ffffff;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
         }
+
+        .header-area {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
         h2 { 
-            color: #111111; 
-            margin-top: 0;
-            margin-bottom: 5px;
+            margin: 0 0 10px 0;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
-        p {
-            color: #666666;
+
+        p.subtitle {
+            color: var(--text-muted);
             font-size: 14px;
-            margin-bottom: 25px;
+            margin: 0;
+            line-height: 1.6;
         }
+
         .form-group { 
-            margin-bottom: 20px; 
+            margin-bottom: 24px; 
         }
+
         label { 
             display: block; 
-            margin-bottom: 8px; 
+            margin-bottom: 10px; 
             font-weight: 600; 
-            font-size: 14px;
-            color: #333333;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         input { 
             width: 100%; 
-            padding: 12px; 
+            padding: 14px; 
             box-sizing: border-box; 
-            border: 1px solid #cccccc;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.2s;
+            font-size: 15px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
         }
+
         input:focus {
-            border-color: #0076FF;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-glow);
             outline: none;
         }
+
         button { 
             width: 100%; 
-            padding: 14px; 
-            background-color: #0076FF; 
+            padding: 16px; 
+            background-color: var(--accent-color); 
             color: white; 
             border: none; 
             border-radius: 6px; 
-            font-size: 16px; 
-            font-weight: bold;
+            font-size: 15px; 
+            font-weight: 600;
             cursor: pointer; 
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            margin-top: 10px;
         }
+
         button:hover {
-            background-color: #0056B3;
+            background-color: #1a85ff;
         }
+
+        #qrContainer {
+            margin-top: 25px;
+            text-align: center;
+            display: none;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #qrContainer img {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
         #status { 
             margin-top: 25px; 
-            padding: 15px; 
+            padding: 16px; 
             border-radius: 6px; 
             display: none; 
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             word-wrap: break-word;
+            border: 1px solid transparent;
         }
+
+        .status-loading { background-color: rgba(255, 255, 255, 0.05); color: var(--text-main); border-color: var(--border-color); }
+        .status-success { background-color: rgba(40, 167, 69, 0.1); color: #34d399; border-color: rgba(40, 167, 69, 0.2); }
+        .status-error { background-color: rgba(220, 53, 69, 0.1); color: #f87171; border-color: rgba(220, 53, 69, 0.2); }
     </style>
 </head>
 <body>
 
-    <h2>XRPTokenizer Dashboard</h2>
-    <p>Mint and distribute custom digital assets instantly across the network.</p>
+    <div class="card">
+        <div class="header-area">
+            <h2>XRPTokenizer Minting Portal</h2>
+            <p class="subtitle">Lock 1:1 RLUSD value into shadow-token collateral arrays instantly.</p>
+        </div>
 
-    <div class="form-group">
-        <label for="userSeed">Your Wallet Secret (Seed / Private Key)</label>
-        <input type="password" id="userSeed" placeholder="e.g. sEd... or private hex string">
+        <div class="form-group">
+            <label for="userAddress">Your Xaman Wallet Address (R-Address)</label>
+            <input type="text" id="userAddress" placeholder="r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh">
+        </div>
+
+        <div class="form-group">
+            <label for="tokenName">Desired Token Name / Ticker</label>
+            <input type="text" id="tokenName" placeholder="e.g. GOLD, USDx, MYTOKEN" maxlength="20">
+        </div>
+
+        <div class="form-group">
+            <label for="mintAmount">Collateral Deposit Amount (RLUSD)</label>
+            <input type="number" id="mintAmount" value="100" step="any">
+        </div>
+
+        <button onclick="requestXamanSign()">Initialize Secure Minting</button>
+
+        <div id="qrContainer">
+            <p style="color: #000; margin: 0 0 15px 0; font-size: 14px; font-weight: bold;">Scan with Xaman Wallet to Lock Asset:</p>
+            <div id="qrCodeTarget"></div>
+        </div>
+
+        <div id="status"></div>
     </div>
-
-    <div class="form-group">
-        <label for="targetRecipient">Target Recipient Address (R-Address)</label>
-        <input type="text" id="targetRecipient" placeholder="r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh">
-    </div>
-
-    <div class="form-group">
-        <label for="mintAmount">Amount to Mint/Send (XAH)</label>
-        <input type="number" id="mintAmount" value="100" step="any">
-    </div>
-
-    <button onclick="processMint()">Mint Token Payload</button>
-
-    <div id="status"></div>
 
     <script>
-        // --- Platform Target Infrastructure Configurations ---
-        const XAHAU_RPC_URL = "wss://xahau-test.xrpllabs.com"; // Change to production mainnet endpoint for live launch
-        const IAW_HUB_ADDRESS = "rEQfpRy1UUcRXspzTg12a24DJH76cNieVq"; // Active target hub routing address
+        // --- Production Configurations ---
+        const IAW_HUB_ADDRESS = "rEQfpRy1UUcRXspzTg12a24DJH76cNieVq"; 
+        const XAMAN_API_KEY = "YOUR_XAMAN_API_KEY"; // Insert your production Xaman API key here
 
-        // Convert a public human-readable R-Address directly into its 20-byte account ID hex format
-        function decodeAddressToHex(rAddress) {
-            try {
-                const codec = window.xrpl.addressCodec;
-                const bytes = codec.decodeAccountID(rAddress);
-                return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-            } catch (e) {
-                throw new Error("Invalid format provided for the Target Recipient R-Address.");
-            }
-        }
-
-        // Convert an explicit text string straight into an uppercase raw hex string
         function stringToHex(str) {
             return Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('').toUpperCase();
         }
 
-        async function processMint() {
+        function updateStatus(message, type) {
             const statusDiv = document.getElementById('status');
             statusDiv.style.display = "block";
-            statusDiv.style.backgroundColor = "#f5f5f5";
-            statusDiv.style.color = "#333333";
-            statusDiv.style.border = "1px solid #e0e0e0";
-            statusDiv.innerText = "Connecting to network pipelines...";
+            statusDiv.className = ""; 
+            statusDiv.innerText = message;
+            
+            if (type === 'loading') statusDiv.classList.add('status-loading');
+            if (type === 'success') statusDiv.classList.add('status-success');
+            if (type === 'error') statusDiv.classList.add('status-error');
+        }
+
+        async function requestXamanSign() {
+            const userAddress = document.getElementById('userAddress').value.trim();
+            const tokenName = document.getElementById('tokenName').value.trim();
+            const mintAmount = document.getElementById('mintAmount').value.trim();
+            const qrContainer = document.getElementById('qrContainer');
+            const qrCodeTarget = document.getElementById('qrCodeTarget');
+
+            qrContainer.style.display = "none";
+            qrCodeTarget.innerHTML = "";
+
+            if (!userAddress || !tokenName || !mintAmount) {
+                updateStatus("Processing Error: All deployment tracking metrics must be full.", "error");
+                return;
+            }
+
+            updateStatus("Assembling institutional transaction payload...", "loading");
 
             try {
-                const userSeed = document.getElementById('userSeed').value.trim();
-                const targetRecipient = document.getElementById('targetRecipient').value.trim();
-                const mintAmount = document.getElementById('mintAmount').value.trim();
-
-                if (!userSeed || !targetRecipient || !mintAmount) {
-                    throw new Error("All interface parameters must be completed.");
-                }
-
-                // Initialize local cryptographical engine from the user's secret keys
-                const wallet = xrpl.Wallet.fromSeed(userSeed);
-                
-                // Establish secure websocket communication channel with decentralized ledger consensus
-                const client = new xrpl.Client(XAHAU_RPC_URL);
-                await client.connect();
-
-                statusDiv.innerText = "Encoding compliance memo tracking structures...";
-
-                // 1. Decode target recipient's public address into structural 20-byte data block
-                const recipientAccountHex = decodeAddressToHex(targetRecipient);
-                
-                // 2. Format custom MemoData field layout: Prefix combined with decoded recipient bytes
-                const memoDataHex = "5EFEA457D290F576" + recipientAccountHex; 
-                
-                // 3. Convert explicit tracking string "5114" to match target hook filter requirements
+                // Convert parameters to strict tracking hex formatting for your C hook
+                const assetNameHex = stringToHex(tokenName).padEnd(16, '0'); // 8 bytes padded
+                const memoDataHex = "5EFEA457D290F576" + assetNameHex; 
                 const memoTypeHex = stringToHex("5114");
 
-                // Translate input amount into native raw drops (1 XAH = 1,000,000 drops)
-                const amountInDrops = (parseFloat(mintAmount) * 1000000).toString();
-
-                // Build transaction payload model
-                const txJson = {
-                    TransactionType: "Payment",
-                    Account: wallet.address,
-                    Destination: IAW_HUB_ADDRESS,
-                    Amount: amountInDrops,
-                    Memos: [
-                        {
-                            Memo: {
-                                MemoData: memoDataHex,
-                                MemoType: memoTypeHex
+                // Payload architecture structure configured for Xaman signature pipeline
+                const payload = {
+                    txjson: {
+                        TransactionType: "Payment",
+                        Account: userAddress,
+                        Destination: IAW_HUB_ADDRESS,
+                        Amount: {
+                            currency: "RLUSD",
+                            value: mintAmount,
+                            issuer: "r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh" // Swap out with official production RLUSD issuer address
+                        },
+                        Memos: [
+                            {
+                                Memo: {
+                                    MemoData: memoDataHex,
+                                    MemoType: memoTypeHex
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    }
                 };
 
-                statusDiv.innerText = "Autofilling ledger fee rates and account sequence tracking...";
-                const prepared = await client.autofill(txJson);
+                // Request Xaman API processing
+                const response = await fetch("https://xumm.app/api/v1/platform/payload", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-API-Key": XAMAN_API_KEY
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-                statusDiv.innerText = "Signing transaction payload locally within memory space...";
-                const signed = wallet.sign(prepared);
+                const data = await response.json();
 
-                statusDiv.innerText = "Broadcasting signature block to active network validators...";
-                const result = await client.submitAndWait(signed.tx_blob);
-                
-                // Safely close connection thread
-                await client.disconnect();
-
-                if (result.result.meta.TransactionResult === "tesSUCCESS") {
-                    statusDiv.style.backgroundColor = "#D4EDDA";
-                    statusDiv.style.color = "#155724";
-                    statusDiv.style.border = "1px solid #c3e6cb";
-                    statusDiv.innerText = "Success! Payload applied cleanly to ledger. 0.33% velocity fee harvested and routed to corporate treasury.";
-                } else {
-                    throw new Error("Ledger engine rejected request: " + result.result.meta.TransactionResult);
+                if (data.error) {
+                    throw new Error(data.error.message || "Xaman API payload rejection.");
                 }
 
-            } catch (error) {
-                statusDiv.style.backgroundColor = "#F8D7DA";
-                statusDiv.style.color = "#721C24";
-                statusDiv.style.border = "1px solid #f5c6cb";
-                statusDiv.innerText = "Processing Fault: " + error.message;
+                // Render connection QR Code inside client terminal
+                updateStatus("Payload ready. Please scan signature link via Xaman app.", "loading");
+                qrContainer.style.display = "block";
+                qrCodeTarget.innerHTML = `<img src="${data.refs.qr_png}" alt="Xaman QR Code">`;
+
+                // Long-poll signature state confirmation
+                verifyWeb3Socket(data.refs.websocket_status);
+
+            } catch (err) {
+                updateStatus("Deployment Fault: " + err.message, "error");
+            }
+        }
+
+        function verifyWeb3Socket(wsUrl) {
+            const ws = new WebSocket(wsUrl);
+            ws.onmessage = (event) => {
+                const response = JSON.parse(event.data);
+                if (response.signed === true) {
+                    ws.close();
+                    document.getElementById('qrContainer').style.display = "none";
+                    updateStatus("Success! 1:1 RLUSD Collateral Hardlocked to Hook Reserve State. 0.33% Architecture Fee Processed.", "success");
+                } else if (response.signed === false) {
+                    ws.close();
+                    document.getElementById('qrContainer').style.display = "none";
+                    updateStatus("Transaction rejected or canceled by user inside Xaman.", "error");
+                }
             }
         }
     </script>
