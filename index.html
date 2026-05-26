@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRPTokenizer - Institutional Minting Terminal</title>
+    <title>XRPTokenizer - Institutional Minting Portal</title>
     <script src="https://xumm.app/assets/cdn/xumm-oauth2-plugin.min.js"></script>
     <script src="https://unpkg.com/xrpl@2.7.0/dist/npm/browser/xrpl-latest-min.js"></script>
     <style>
@@ -112,12 +112,18 @@
             padding: 20px;
             background: #ffffff;
             border-radius: 8px;
-            display: inline-block;
             width: 100%;
             box-sizing: border-box;
         }
 
-        #qrContainer img {
+        #qrContainer p {
+            color: #0b0e14;
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #qrCodeTarget img {
             max-width: 200px;
             margin: 0 auto;
         }
@@ -164,7 +170,7 @@
         <button onclick="requestXamanSign()">Initialize Secure Minting</button>
 
         <div id="qrContainer">
-            <p style="color: #000; margin: 0 0 15px 0; font-size: 14px; font-weight: bold;">Scan with Xaman Wallet to Lock Asset:</p>
+            <p>Scan with Xaman Wallet to Lock Asset:</p>
             <div id="qrCodeTarget"></div>
         </div>
 
@@ -174,7 +180,7 @@
     <script>
         // --- Production Configurations ---
         const IAW_HUB_ADDRESS = "rEQfpRy1UUcRXspzTg12a24DJH76cNieVq"; 
-        const XAMAN_API_KEY = "YOUR_XAMAN_API_KEY"; // Insert your production Xaman API key here
+        const XAMAN_API_KEY = "YOUR_XAMAN_API_KEY"; 
 
         function stringToHex(str) {
             return Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('').toUpperCase();
@@ -202,7 +208,7 @@
             qrCodeTarget.innerHTML = "";
 
             if (!userAddress || !tokenName || !mintAmount) {
-                updateStatus("Processing Error: All deployment tracking metrics must be full.", "error");
+                updateStatus("Processing Error: All deployment parameters must be filled.", "error");
                 return;
             }
 
@@ -223,7 +229,7 @@
                         Amount: {
                             currency: "RLUSD",
                             value: mintAmount,
-                            issuer: "r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh" // Swap out with official production RLUSD issuer address
+                            issuer: "r9NCb2VRoCznGZ85wmnovtH479nZb1ejjh" // Replace with live production RLUSD issuer address
                         },
                         Memos: [
                             {
@@ -262,6 +268,7 @@
 
             } catch (err) {
                 updateStatus("Deployment Fault: " + err.message, "error");
+                document.getElementById('qrContainer').style.display = "none";
             }
         }
 
